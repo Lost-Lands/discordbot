@@ -53,12 +53,14 @@ client.on('message', (message) => {
             }
             else {
 
-                console.log('Request to create clan: "'+args[1]+'"');
+                var clanname = args[1].replace(/\W/g, '').toLowerCase(); //Lower case the new clan name
+
+                console.log('Request to create clan: "'+clanname+'"');
 
 
                 message.guild.roles.create({ //Create the clan default role
                     data: {
-                        name: "[C] "+args[1],
+                        name: "[C] "+clanname,
                         color: '#148603',
                     }
                 }).then(function(role) {
@@ -66,8 +68,7 @@ client.on('message', (message) => {
                     message.member.roles.add(role.id).catch(console.error);
                     
                     //Create Clan Channel
-                    var channelname = args[1].replace(/\W/g, '').toLowerCase(); //Lower case the new clan name
-                        message.guild.channels.create("c-"+channelname, {
+                        message.guild.channels.create("c-"+clanname, {
                             type: 'text',
                             parent: clans_category,
                             permissionOverwrites: [
@@ -86,14 +87,14 @@ client.on('message', (message) => {
                                 }
                             ],
                         }).then(function(channel) {
-                            console.log('Created new role: "'+channel.name+'"')
-                            client.channels.cache.get(channel.id).send(`Welcome to ${args[1]}, ${message.author}!`);
+                            console.log('Created new role: "'+clanname+'"')
+                            client.channels.cache.get(channel.id).send(`Welcome to ${clanname}, ${message.author}!`);
                         }).catch(console.error);
 
                     //Create the clan Admin role
                     message.guild.roles.create({ 
                         data: {
-                            name: "[C] "+args[1]+" admin",
+                            name: "[C] "+clanname+" admin",
                             color: '#148603',
                         }
                     }).then(function(role) {
@@ -121,36 +122,38 @@ client.on('message', (message) => {
         }
         else if (args[0] === "disband" || args[0] === "delete") {
 
-            clanname = message.channel.name.substring(0,-2);
+            
+            var channelname = message.channel.name
+            var clanname = channelname.substring(2);
 
-            if (message.channel.name.substring(0,2) !== 'c-') {
+            if (channelname.substring(0,2) !== 'c-') {
                 return message.reply("Please run this command inside the clan you are trying to disband.");
             }
 
-            if (typeof args[1] === 'undefined') {
-                return message.channel.send(`Please include a clan name, ${message.author}!`);
+            if (typeof clanname === 'undefined') {
+                return message.channel.send(`ERROR: Unable to fetch clan name.`);
             }
             else if (typeof args[2] !== 'undefined') {
                 return message.channel.send(`Clan names must not have any spaces, ${message.author}!`);
             }
             else {
-                var channelname = "c-"+args[1]
+                
                 console.log("Attempting to disband "+channelname);
-                console.log("Searching for memberRole: [C] "+args[1]);
-                var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+args[1]);
-                console.log("Searching for adminRole: [C] "+args[1]+" admin")
-                var adminRole = message.guild.roles.cache.find(r => r.name === "[C] "+args[1]+" admin");
+                console.log("Searching for memberRole: [C] "+clanname);
+                var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+clanname);
+                console.log("Searching for adminRole: [C] "+clanname+" admin")
+                var adminRole = message.guild.roles.cache.find(r => r.name === "[C] "+clanname+" admin");
 
                 if (typeof memberRole === 'undefined') {
-                    console.log("Unable to find memberRole: [C] "+args[1]);
-                    return message.channel.send("Could not find that clan.");
+                    console.log("Unable to find memberRole: [C] "+clanname);
+                    return message.channel.send("Could not find that clan.1");
                 }
                 else if (typeof adminRole === 'undefined') {
-                    console.log("Unable to find adminRole: [C] "+args[1]+" admin");
-                    return message.channel.send("Could not find that clan.");
+                    console.log("Unable to find adminRole: [C] "+clanname+" admin");
+                    return message.channel.send("Could not find that clan.2");
                 }
                 else {
-                    if (!message.member.roles.cache.some((role) => role.name === "[C] "+args[1]+" admin")) {
+                    if (!message.member.roles.cache.some((role) => role.name === "[C] "+clanname+" admin")) {
                         return message.reply("You are not admin of that clan.");
                     }
                     else {
@@ -217,16 +220,20 @@ client.on('message', (message) => {
             
 
         } else if (args[0] === "invite" || args[0] === "add") {
-            clanname = message.channel.name.substring(0,-2);
 
-            if (message.channel.name.substring(0,2) !== 'c-') {
+            var channelname = message.channel.name
+            var clanname = channelname.substring(2);
+            var inviteUser = args[1]
+            console.log(clanname);
+
+            if (channelname.substring(0,2) !== 'c-') {
                 return message.reply("Please run this command inside the clan you are trying to invite someone to.");
             }
 
             if (typeof clanname === 'undefined') {
-                return message.channel.send(`Please include a clan name, ${message.author}!`);
+                return message.channel.send(`ERROR: Unable to fetch clan name.`);
             }
-            else if (typeof args[2] === 'undefined') {
+            else if (typeof inviteUser === 'undefined') {
                 return message.channel.send(`Please include the person you are trying to invite, ${message.author}!`);
             }
             else {
@@ -236,7 +243,7 @@ client.on('message', (message) => {
                 else {
                     
                     
-                    var inviteMemberID = args[2].substring(3).slice(0, -1)
+                    var inviteMemberID = inviteUser.substring(3).slice(0, -1)
                     var invitedMemberSelector = client.users.cache.get(inviteMemberID)
 
                     if (inviteMemberID === message.author.id) {
@@ -248,7 +255,7 @@ client.on('message', (message) => {
                     message.channel.send(`Invite sent.`);
                     
 
-                    client.channels.cache.get(invite_channel).send(args[2]+", you have been invited to **"+clanname+"**! Invite expires in 24 hours. Please accept or reject with 👍 or 👎").then(function(message){
+                    client.channels.cache.get(invite_channel).send(inviteUser+", you have been invited to **"+clanname+"**! Invite expires in 24 hours. Please accept or reject with 👍 or 👎").then(function(message){
                         message.react('👍').then(() => message.react('👎'));
                         const filter = (reaction, user) => {
                             return ['👍', '👎'].includes(reaction.emoji.name) && user.id === inviteMemberID;
