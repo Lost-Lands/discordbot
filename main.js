@@ -67,7 +67,7 @@ client.on('message', (message) => {
                     
                     //Create Clan Channel
                     var channelname = args[1].replace(/\W/g, '').toLowerCase(); //Lower case the new clan name
-                        message.guild.channels.create(channelname, {
+                        message.guild.channels.create("'"+channelname+"'", {
                             type: 'text',
                             parent: clans_category,
                             permissionOverwrites: [
