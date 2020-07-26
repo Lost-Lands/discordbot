@@ -7,6 +7,15 @@ const prefix = process.env.BOT_PREFIX || config.prefix;
 const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
 const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
 
+
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 3000
+
+app.get('/', (req, res) => res.send('Lost Lands Clans Bot Running.'))
+
+app.listen(port, () => console.log(`Clans Bot Web UI Running`))
+
 { prefix, token, clans_category } 
 
 const client = new Discord.Client();
