@@ -69,7 +69,7 @@ client.on('message', (message) => {
                     var channelname = args[1].replace(/\W/g, '').toLowerCase(); //Lower case the new clan name
                         message.guild.channels.create(channelname, {
                             type: 'text',
-                            parent: 'clans_category',
+                            parent: clans_category,
                             permissionOverwrites: [
                                 {
                                     id: role.id, //Give clan role permissions
@@ -167,7 +167,6 @@ client.on('message', (message) => {
                                                 console.log("Roles have been deleted. Attempting to delete text channel...");
                                                 
                                                 var channelname = args[1].replace(/\W/g, '').toLowerCase();
-                                                console.log(message.guild.channels);
                                                 var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === channelname);
                                                 if (typeof channelSelector === 'undefined'){
                                                     console.log(channelSelector);
