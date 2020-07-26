@@ -1,0 +1,14 @@
+{
+  "name": "lostlandsbot",
+  "version": "1.0.0",
+  "description": "Discord bot for Lost Lands",
+  "main": "main.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "DoubleCheck",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.2.0"
+  }
+}
