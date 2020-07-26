@@ -259,14 +259,14 @@ client.on('message', (message) => {
                             return ['👍', '👎'].includes(reaction.emoji.name) && user.id === inviteMemberID;
                         };
                         //invitedMemberSelector.send("You have been invited to **"+clanname+"**! Invite expires in 24 hours. Please view this message to accept or decline: https://discordapp.com/channels/712881309701111860/736817703251214377/"+message.id);
-                        message.awaitReactions(filter, { max: 1, time: 86400000, errors: ['time'] })
+                        message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
                         .then(collected => {
                             if(message.react.bot) return
                             const reaction = collected.first();
 
                             if (reaction.emoji.name === '👍') {
                                 var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+clanname);
-
+                                console.log(memberRole);
                                 const member = message.mentions.members.first();
                                 member.roles.add(memberRole.id).then(function(data){
                                     console.log(data);
