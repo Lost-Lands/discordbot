@@ -253,16 +253,19 @@ client.on('message', (message) => {
                     message.channel.send(`Invite sent.`);
                     
 
-                    client.channels.cache.get(invite_channel).send(inviteUser+", you have been invited to **"+clanname+"**! Invite expires in 24 hours. Please accept or reject with 👍 or 👎").then(function(message){
+                    client.channels.cache.get(invite_channel).send(inviteUser+", you have been invited to **"+clanname+"**! Invite expires in 12 hours. Please accept or reject with 👍 or 👎").then(function(message){
                         message.react('👍').then(() => message.react('👎'));
                         const filter = (reaction, user) => {
+                            console.log("Invite response from:"+ inviteMemberID);
                             return ['👍', '👎'].includes(reaction.emoji.name) && user.id === inviteMemberID;
                         };
                         //invitedMemberSelector.send("You have been invited to **"+clanname+"**! Invite expires in 24 hours. Please view this message to accept or decline: https://discordapp.com/channels/712881309701111860/736817703251214377/"+message.id);
-                        message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+                        message.awaitReactions(filter, { max: 1, time: 43200000, errors: ['time'] })
                         .then(collected => {
                             if(message.react.bot) return
                             const reaction = collected.first();
+
+                            console.log(reaction);
 
                             if (reaction.emoji.name === '👍') {
                                 var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+clanname);
@@ -279,9 +282,9 @@ client.on('message', (message) => {
                                 return message.channel.send("❌ Rejected invite to **"+clanname+"** ☹️");
                             }
                             else {
-                                return message.channel.send("You failed to react with 👍 or 👎 and now "+clanname+" doesn't want you anymore.");
+                                return message.channel.send("😂 You failed to react with 👍 or 👎 and now **"+clanname+"** doesn't want you anymore.");
                             }
-                        })
+                        }).catch(message => {console.log("Invite time expired for "+inviteMemberID+" to "+clanname)});
                       });
                 }
                 
