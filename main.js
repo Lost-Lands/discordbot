@@ -9,12 +9,23 @@ const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
 
 
 const express = require('express')
+
 const app = express()
 const port = process.env.PORT || 3000
 
+const { wakeDyno, wakeDynos } = require('heroku-keep-awake');
+
+const DYNO_URL = 'https://lostlands-clansbot.herokuapp.com/';
+
 app.get('/', (req, res) => res.send('Lost Lands Clans Bot Running.'))
 
-app.listen(port, () => console.log(`Clans Bot Web UI Running`))
+app.listen(port, () => {
+
+wakeDyno(DYNO_URL);
+
+console.log(`Clans Bot Web UI Running`)
+
+})
 
 { prefix, token, clans_category } 
 
