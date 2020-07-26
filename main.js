@@ -146,7 +146,7 @@ client.on('message', (message) => {
                         return message.reply("You are not admin of that clan.");
                     }
                     else {
-                    message.reply("Please confirm disbanding "+args[1]+" with 👍 or 👎");
+                    message.reply("Please confirm disbanding **"+args[1]+"** with 👍 or 👎");
                     message.react('👍').then(() => message.react('👎'));
 
                     const filter = (reaction, user) => {
@@ -225,7 +225,7 @@ client.on('message', (message) => {
                     var inviteMemberID = args[2].substring(3).slice(0, -1)
                     var invitedMemberSelector = client.users.cache.get(inviteMemberID)
 
-                    if (inviteMemberID === message.author) {
+                    if (inviteMemberID === message.author.id) {
                         return message.channel.send(`You cannot invite yourself.`);
                     }
                     
