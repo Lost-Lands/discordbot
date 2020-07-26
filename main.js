@@ -87,7 +87,7 @@ client.on('message', (message) => {
                                 }
                             ],
                         }).then(function(channel) {
-                            console.log('Created new role: "'+clanname+'"')
+                            console.log('Created new channel: "'+clanname+'"')
                             client.channels.cache.get(channel.id).send(`Welcome to ${clanname}, ${message.author}!`);
                         }).catch(console.error);
 
@@ -190,7 +190,7 @@ client.on('message', (message) => {
                                                     .then(function(deleted) {
                                                         console.log("Channel "+channelSelector.name+" deleted successfully.")
                                                         console.log(channelSelector.name+" completely disbanded.")
-                                                        return client.channels.cache.get('736823607262576640').send(`**${channelSelector.name.substring(0,-2)}** has been disbanded by ${message.author}!`);
+                                                        return client.channels.cache.get('736823607262576640').send(`**${channelSelector.name.substring(2)}** has been disbanded by ${message.author}!`);
                                                     }).catch(function(error) {
                                                         //console.log("Channel "+channelname+" failed to delete. Exiting.")
                                                         //eturn message.channel.send("Error (2) deleting clan channel. Please use -new in #server-help to contact us.");
