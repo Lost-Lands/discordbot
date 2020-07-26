@@ -181,8 +181,8 @@ client.on('message', (message) => {
                                                         console.log(channelSelector.name+" completely disbanded.")
                                                         return client.channels.cache.get('736634261213413456').send(`**${channelSelector.name}** has been disbanded by ${message.author}!`);
                                                     }).catch(function(error) {
-                                                        console.log("Channel "+channelname+" failed to delete. Exiting.")
-                                                        return message.channel.send("Error (2) deleting clan channel. Please use -new in #server-help to contact us.");
+                                                        //console.log("Channel "+channelname+" failed to delete. Exiting.")
+                                                        //eturn message.channel.send("Error (2) deleting clan channel. Please use -new in #server-help to contact us.");
                                                     });
 
                                                     
@@ -224,6 +224,10 @@ client.on('message', (message) => {
                     
                     var inviteMemberID = args[2].substring(3).slice(0, -1)
                     var invitedMemberSelector = client.users.cache.get(inviteMemberID)
+
+                    if (inviteMemberID === message.author) {
+                        return message.channel.send(`You cannot invite yourself.`);
+                    }
                     
 
 
