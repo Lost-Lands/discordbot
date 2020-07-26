@@ -67,7 +67,7 @@ client.on('message', (message) => {
                     
                     //Create Clan Channel
                     var channelname = args[1].replace(/\W/g, '').toLowerCase(); //Lower case the new clan name
-                        message.guild.channels.create("'"+channelname+"'", {
+                        message.guild.channels.create("[C] "+channelname, {
                             type: 'text',
                             parent: clans_category,
                             permissionOverwrites: [
@@ -127,7 +127,8 @@ client.on('message', (message) => {
                 return message.channel.send(`Clan names must not have any spaces, ${message.author}!`);
             }
             else {
-                console.log("Attempting to disband "+args[1]);
+                var channelname = "[C] "+args[1]
+                console.log("Attempting to disband "+channelname);
                 console.log("Searching for memberRole: [C] "+args[1]);
                 var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+args[1]);
                 console.log("Searching for adminRole: [C] "+args[1]+" admin")
@@ -167,7 +168,7 @@ client.on('message', (message) => {
                                                 console.log("Roles have been deleted. Attempting to delete text channel...");
                                                 
                                                 var channelname = args[1].replace(/\W/g, '').toLowerCase();
-                                                var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === "'"+channelname+"'");
+                                                var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === "[C] "+channelname);
                                                 if (typeof channelSelector === 'undefined'){
                                                     console.log(channelSelector);
                                                     console.log("Channel "+channelname+" not found. Exiting.")
@@ -179,7 +180,7 @@ client.on('message', (message) => {
                                                     .then(function(deleted) {
                                                         console.log("Channel "+channelSelector.name+" deleted successfully.")
                                                         console.log(channelSelector.name+" completely disbanded.")
-                                                        return client.channels.cache.get('736634261213413456').send(`**${channelSelector.name}** has been disbanded by ${message.author}!`);
+                                                        return client.channels.cache.get('736634261213413456').send(`**${channelSelector.name.substring(0,-3)}** has been disbanded by ${message.author}!`);
                                                     }).catch(function(error) {
                                                         //console.log("Channel "+channelname+" failed to delete. Exiting.")
                                                         //eturn message.channel.send("Error (2) deleting clan channel. Please use -new in #server-help to contact us.");
@@ -208,15 +209,21 @@ client.on('message', (message) => {
             }
             
 
-        } else if (args[0] === "invite" || args[0] === "add"){
-            if (typeof args[1] === 'undefined') {
+        } else if (args[0] === "invite" || args[0] === "add") {
+            clanname = message.channel.name.substring(0,-3);
+
+            if (message.channel.name.substring(0,3) !== '[C]') {
+                return message.reply("Please run this command inside the clan you are trying to invite someone to.");
+            }
+
+            if (typeof clanname === 'undefined') {
                 return message.channel.send(`Please include a clan name, ${message.author}!`);
             }
             else if (typeof args[2] === 'undefined') {
                 return message.channel.send(`Please include the person you are trying to invite, ${message.author}!`);
             }
             else {
-                if (!message.member.roles.cache.some((role) => role.name === "[C] "+args[1]+" admin")) {
+                if (!message.member.roles.cache.some((role) => role.name === "[C] "+clanname+" admin")) {
                     return message.reply("You do not have permission to invite members");
                 }
                 else {
@@ -234,33 +241,33 @@ client.on('message', (message) => {
                     message.channel.send(`Invite sent.`);
                     
 
-                    client.channels.cache.get(invite_channel).send(args[2]+", you have been invited to **"+args[1]+"**! Invite expires in 24 hours. Please accept or reject with 👍 or 👎").then(function(message){
+                    client.channels.cache.get(invite_channel).send(args[2]+", you have been invited to **"+clanname+"**! Invite expires in 24 hours. Please accept or reject with 👍 or 👎").then(function(message){
                         message.react('👍').then(() => message.react('👎'));
                         const filter = (reaction, user) => {
                             return ['👍', '👎'].includes(reaction.emoji.name) && user.id === inviteMemberID;
                         };
-                        invitedMemberSelector.send("You have been invited to **"+args[1]+"**! Invite expires in 24 hours. Please view this message to accept or decline: https://discordapp.com/channels/712881309701111860/736817703251214377/"+message.id);
+                        invitedMemberSelector.send("You have been invited to **"+clanname+"**! Invite expires in 24 hours. Please view this message to accept or decline: https://discordapp.com/channels/712881309701111860/736817703251214377/"+message.id);
                         message.awaitReactions(filter, { max: 1, time: 86400000, errors: ['time'] })
                         .then(collected => {
                             if(message.react.bot) return
                             const reaction = collected.first();
 
                             if (reaction.emoji.name === '👍') {
-                                var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+args[1]);
+                                var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+clanname);
 
                                 const member = message.mentions.members.first();
                                 member.roles.add(memberRole.id).then(function(data){
                                     console.log(data);
-                                    return message.channel.send("✅ Accepted invite to **"+args[1]+"**!");
+                                    return message.channel.send("✅ Accepted invite to **"+clanname+"**!");
                                 }).catch(function(err) {
                                     return message.channel.send("There was an error accepting your invite. Please contact us in #server-help by starting a new ticket with -new");
                                 });
                                 
                             } else if (reaction.emoji.name === '👎') {
-                                return message.channel.send("❌ Rejected invite to **"+args[1]+"** ☹️");
+                                return message.channel.send("❌ Rejected invite to **"+clanname+"** ☹️");
                             }
                             else {
-                                return message.channel.send("You failed to react with 👍 or 👎 and now "+args[1]+" doesn't want you anymore.");
+                                return message.channel.send("You failed to react with 👍 or 👎 and now "+clanname+" doesn't want you anymore.");
                             }
                         })
                       });
