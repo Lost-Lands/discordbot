@@ -176,9 +176,7 @@ client.on('message', (message) => {
                                             adminRole.delete('Clan disbanded').then(function(deleted) {
                                                 console.log(`Deleted role ${deleted.name}`);
                                                 console.log("Roles have been deleted. Attempting to delete text channel...");
-                                                
-                                                var channelname = args[1].replace(/\W/g, '').toLowerCase();
-                                                var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === "c-"+channelname);
+                                                var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === channelname);
                                                 if (typeof channelSelector === 'undefined'){
                                                     console.log(channelSelector);
                                                     console.log("Channel "+channelname+" not found. Exiting.")
