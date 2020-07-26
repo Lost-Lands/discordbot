@@ -120,6 +120,13 @@ client.on('message', (message) => {
             
         }
         else if (args[0] === "disband" || args[0] === "delete") {
+
+            clanname = message.channel.name.substring(0,-2);
+
+            if (message.channel.name.substring(0,2) !== 'c-') {
+                return message.reply("Please run this command inside the clan you are trying to disband.");
+            }
+
             if (typeof args[1] === 'undefined') {
                 return message.channel.send(`Please include a clan name, ${message.author}!`);
             }
@@ -147,7 +154,7 @@ client.on('message', (message) => {
                         return message.reply("You are not admin of that clan.");
                     }
                     else {
-                    message.reply("Please confirm disbanding **"+args[1]+"** with 👍 or 👎");
+                    message.reply("Please confirm disbanding **"+clanname+"** with 👍 or 👎");
                     message.react('👍').then(() => message.react('👎'));
 
                     const filter = (reaction, user) => {
@@ -180,7 +187,7 @@ client.on('message', (message) => {
                                                     .then(function(deleted) {
                                                         console.log("Channel "+channelSelector.name+" deleted successfully.")
                                                         console.log(channelSelector.name+" completely disbanded.")
-                                                        return client.channels.cache.get('736634261213413456').send(`**${channelSelector.name.substring(0,-2)}** has been disbanded by ${message.author}!`);
+                                                        return client.channels.cache.get('736823607262576640').send(`**${channelSelector.name.substring(0,-2)}** has been disbanded by ${message.author}!`);
                                                     }).catch(function(error) {
                                                         //console.log("Channel "+channelname+" failed to delete. Exiting.")
                                                         //eturn message.channel.send("Error (2) deleting clan channel. Please use -new in #server-help to contact us.");
@@ -210,7 +217,7 @@ client.on('message', (message) => {
             
 
         } else if (args[0] === "invite" || args[0] === "add") {
-            clanname = message.channel.name.substring(0,-3);
+            clanname = message.channel.name.substring(0,-2);
 
             if (message.channel.name.substring(0,2) !== 'c-') {
                 return message.reply("Please run this command inside the clan you are trying to invite someone to.");
