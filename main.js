@@ -264,9 +264,6 @@ client.on('message', (message) => {
                         .then(collected => {
                             if(message.react.bot) return
                             const reaction = collected.first();
-
-                            console.log(reaction);
-
                             if (reaction.emoji.name === '👍') {
                                 var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+clanname);
                                 console.log(memberRole);
