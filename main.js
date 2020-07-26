@@ -67,7 +67,7 @@ client.on('message', (message) => {
                     
                     //Create Clan Channel
                     var channelname = args[1].replace(/\W/g, '').toLowerCase(); //Lower case the new clan name
-                        message.guild.channels.create("[C] "+channelname, {
+                        message.guild.channels.create("c-"+channelname, {
                             type: 'text',
                             parent: clans_category,
                             permissionOverwrites: [
@@ -127,7 +127,7 @@ client.on('message', (message) => {
                 return message.channel.send(`Clan names must not have any spaces, ${message.author}!`);
             }
             else {
-                var channelname = "[C] "+args[1]
+                var channelname = "c-"+args[1]
                 console.log("Attempting to disband "+channelname);
                 console.log("Searching for memberRole: [C] "+args[1]);
                 var memberRole = message.guild.roles.cache.find(r => r.name === "[C] "+args[1]);
@@ -168,7 +168,7 @@ client.on('message', (message) => {
                                                 console.log("Roles have been deleted. Attempting to delete text channel...");
                                                 
                                                 var channelname = args[1].replace(/\W/g, '').toLowerCase();
-                                                var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === "[C] "+channelname);
+                                                var channelSelector = message.guild.channels.cache.find(r => r.parentID === '736628211471089715' && r.name === "c-"+channelname);
                                                 if (typeof channelSelector === 'undefined'){
                                                     console.log(channelSelector);
                                                     console.log("Channel "+channelname+" not found. Exiting.")
@@ -180,7 +180,7 @@ client.on('message', (message) => {
                                                     .then(function(deleted) {
                                                         console.log("Channel "+channelSelector.name+" deleted successfully.")
                                                         console.log(channelSelector.name+" completely disbanded.")
-                                                        return client.channels.cache.get('736634261213413456').send(`**${channelSelector.name.substring(0,-3)}** has been disbanded by ${message.author}!`);
+                                                        return client.channels.cache.get('736634261213413456').send(`**${channelSelector.name.substring(0,-2)}** has been disbanded by ${message.author}!`);
                                                     }).catch(function(error) {
                                                         //console.log("Channel "+channelname+" failed to delete. Exiting.")
                                                         //eturn message.channel.send("Error (2) deleting clan channel. Please use -new in #server-help to contact us.");
@@ -212,7 +212,7 @@ client.on('message', (message) => {
         } else if (args[0] === "invite" || args[0] === "add") {
             clanname = message.channel.name.substring(0,-3);
 
-            if (message.channel.name.substring(0,3) !== '[C]') {
+            if (message.channel.name.substring(0,2) !== 'c-') {
                 return message.reply("Please run this command inside the clan you are trying to invite someone to.");
             }
 
