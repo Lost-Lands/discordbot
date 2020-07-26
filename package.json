@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Discord bot for Lost Lands",
   "main": "main.js",
+  "start": "main.js",
   "scripts": {
     "test": "npm test"
   },
