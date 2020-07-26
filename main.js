@@ -228,7 +228,7 @@ client.on('message', (message) => {
                     
 
 
-
+                    message.channel.send(`Invite sent.`);
                     
 
                     client.channels.cache.get(invite_channel).send(args[2]+", you have been invited to **"+args[1]+"**! Invite expires in 24 hours. Please accept or reject with 👍 or 👎").then(function(message){
