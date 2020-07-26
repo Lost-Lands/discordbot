@@ -1,6 +1,13 @@
 const Discord = require('discord.js');
 const MessageEmbed = require('discord.js');
-const { prefix, token, clans_category } = require('./config.json');
+const config = require('./config.json');
+
+const token = process.env.BOT_TOKEN || config.token;
+const prefix = process.env.BOT_PREFIX || config.prefix;
+const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
+const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
+
+{ prefix, token, clans_category } 
 
 const client = new Discord.Client();
 
