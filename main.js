@@ -36,7 +36,7 @@ const client = new Discord.Client();
 
 client.once('ready', () => {
     console.log('Lost Lands Clan bot running.');
-    client.user.setActivity("-clan");   
+    client.user.setActivity("-help");   
 });
 
 client.on('message', (message) => {
@@ -55,7 +55,21 @@ client.on('message', (message) => {
             .catch(console.error);
     
     } 
-     else if (command == 'stats' || command == 'status') {
+    else if (command === 'help') {
+        const helpEmbed = new Discord.MessageEmbed()
+            .setColor('#80ff00')
+            .setTitle('Lost Lands Bot')
+            .setURL('https://lostlands.co')
+            .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
+            .addFields(
+                { name: 'Server status', value: '`-status`', inline: true },
+            )
+            .setTimestamp()
+            .setTimestamp().setFooter('Lost Lands')
+
+        message.channel.send(helpEmbed);
+    } 
+    else if (command == 'stats' || command == 'status') {
 
     request.post(
         'https://api.uptimerobot.com/v2/getMonitors',
@@ -111,8 +125,9 @@ client.on('message', (message) => {
         }
         
     )}
-    else if (command === 'clan') {
-		if (!args.length) {
+  else if (command === 'clan') {
+    if (message.channel.parent.id === clans_category) { //Check if -clan is run inside the clans category
+        if (!args.length) {
             return message.channel.send(`Please tell me what you'd like to do, ${message.author}!`);
         }
         else if (args[0] === "create" || args[0] === "new") {
@@ -174,7 +189,7 @@ client.on('message', (message) => {
                     }).catch(console.error);
 
                 }).catch(console.error);
-               
+            
 
                 const clanSuccess = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -353,7 +368,7 @@ client.on('message', (message) => {
                                 return message.channel.send("😂 You failed to react with 👍 or 👎 and now **"+clanname+"** doesn't want you anymore.");
                             }
                         }).catch(message => {console.log("Invite time expired for "+inviteMemberID+" to "+clanname)});
-                      });
+                    });
                 }
                 
             }
@@ -361,7 +376,10 @@ client.on('message', (message) => {
         else {
             return message.channel.send(`Unknown command.`);
         }
-	}
+    } else {
+        return message.reply("Clans are not open yet!");
+    }
+}
 });
 
 client.login(token);
