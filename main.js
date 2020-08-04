@@ -105,13 +105,13 @@ client.on('message', (message) => {
                 }
                 body.monitors.forEach(function(server) {
                     if (server.status === 0) {
-                        statsEmbed.addField(server.friendly_name+":", '⚫ Paused')
+                        statsEmbed.addField(server.friendly_name+":", '⚫ Paused', true)
                     }
                     if (server.status === 2) {
-                        statsEmbed.addField(server.friendly_name+":", '🟢 Online')
+                        statsEmbed.addField(server.friendly_name+":", '🟢 Online', true)
                     }
                     else {
-                        statsEmbed.addField(server.friendly_name+":", '🟡 Unknown')
+                        statsEmbed.addField(server.friendly_name+":", '🟡 Unknown', true)
                     }
                     
                 })
