@@ -90,7 +90,7 @@ client.on('message', (message) => {
         { json: { "api_key": process.env.UPTIMEROBOT_API_KEY|| config.uptimerobot_api_key, "format": "json" } },
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-    
+                console.log(body);
                 const statsEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Lost Lands Status')
@@ -113,6 +113,8 @@ client.on('message', (message) => {
                 {
                     statsEmbed.addField("Online Players:", ms.current_players, true);
                 }
+                potentialOutage = false
+                outage = false
                 body.monitors.forEach(function(server) {
                     console.log(server.friendly_name+": "+server.status);
                     if (server.status === 0) {
@@ -121,11 +123,22 @@ client.on('message', (message) => {
                         statsEmbed.addField(server.friendly_name+":", '🟢 Online', true);
                     } else if  (server.status === 8) {
                         statsEmbed.addField(server.friendly_name+":", '🟡 Unknown', true);
+                        potentialOutage = true
                     } else if  (server.status === 9) {
+                        outage = true
                         statsEmbed.addField(server.friendly_name+":", '🔴 Offline', true);
-                    } 
-                    
+                    }
+
                 })
+                if (typeof outage  !== 'undefined' && outage === true ) {
+                    statsEmbed.setDescription('❌ Server outage detected.')
+                }
+                else if (typeof potentialOutage  !== 'undefined' && potentialOutage === true) {
+                    statsEmbed.setDescription('⚠️ Potential/partial server outage detected.')
+                }
+                else {
+                    statsEmbed.setDescription('✅ All services operational.')
+                }
                 statsEmbed.addField('Status Website:', '🟢 Online', true)
                 message.channel.send(statsEmbed)
                 });
