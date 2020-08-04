@@ -84,7 +84,7 @@ client.on('message', (message) => {
     
                 const statsEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
-                .setTitle('Lost Lands Stats')
+                .setTitle('Lost Lands Status')
                 .setURL('https://status.lostlands.co/')
                 .addField('Discord Members:', message.guild.memberCount, true)
                 
