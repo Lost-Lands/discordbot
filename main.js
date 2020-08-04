@@ -4,6 +4,8 @@ const config = require('./config.json');
 const request = require('request');
 
 var ms = require('./minestat');
+var ms1 = require('./minestat');
+
 
 const token = process.env.BOT_TOKEN || config.token;
 const prefix = process.env.BOT_PREFIX || config.prefix;
@@ -90,18 +92,15 @@ client.on('message', (message) => {
         { json: { "api_key": process.env.UPTIMEROBOT_API_KEY|| config.uptimerobot_api_key, "format": "json" } },
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(body);
                 const statsEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Lost Lands Status')
                 .setURL('https://status.lostlands.co/')
-                .addField('Discord Members:', message.guild.memberCount, true)
+                .addField('**Discord Members:**', message.guild.memberCount, true)
                 
                 .setTimestamp().setFooter('Lost Lands')
     
-                ms.init('srv03.lostlands.co', 25580, function(result)
-                {
-    
+                ms.init('srv03.lostlands.co', 25580, function(result) {
                 //ms.address
                 //ms.port
                 //ms.online
@@ -111,22 +110,25 @@ client.on('message', (message) => {
                 //ms.latency
                 if(ms.online)
                 {
-                    statsEmbed.addField("Online Players:", ms.current_players, true);
+                    statsEmbed.addField("**Online Players:**", ms.current_players, true);
+                }
+                else {
+                    statsEmbed.addField("**Online Players:**", "Error", true);
                 }
                 potentialOutage = false
                 outage = false
                 body.monitors.forEach(function(server) {
                     console.log(server.friendly_name+": "+server.status);
                     if (server.status === 0) {
-                        statsEmbed.addField(server.friendly_name+":", '⚫ Paused', true);
+                        statsEmbed.addField("**"+server.friendly_name+":**", '⚫ Paused', true);
                     } else if (server.status === 2) {
-                        statsEmbed.addField(server.friendly_name+":", '🟢 Online', true);
+                        statsEmbed.addField("**"+server.friendly_name+":**", '🟢 Online', true);
                     } else if  (server.status === 8) {
-                        statsEmbed.addField(server.friendly_name+":", '🟡 Unknown', true);
+                        statsEmbed.addField("**"+server.friendly_name+":**", '🟡 Unknown', true);
                         potentialOutage = true
                     } else if  (server.status === 9) {
                         outage = true
-                        statsEmbed.addField(server.friendly_name+":", '🔴 Offline', true);
+                        statsEmbed.addField("**"+server.friendly_name+":**", '🔴 Offline', true);
                     }
 
                 })
@@ -142,12 +144,7 @@ client.on('message', (message) => {
                 statsEmbed.addField('Status Website:', '🟢 Online', true)
                 message.channel.send(statsEmbed)
                 });
-                
-               
-                
-                
-    
-            }
+        }
             else {
                 return callback("Unable to get server status.");
             }
