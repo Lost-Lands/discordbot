@@ -4,13 +4,27 @@ const config = require('./config.json');
 const request = require('request');
 
 var ms = require('./minestat');
-var ms1 = require('./minestat');
+/*
+var fs = require('fs'),
+    nbt = require('prismarine-nbt');
 
+fs.readFile('file.dat', function(error, data) {
+    if (error) throw error;
+
+    nbt.parse(data, function(error, data) {
+        console.log(data.value.bukkit.value.firstPlayed.value);
+        var unix = nbt.simplify(data.value.bukkit.value.firstPlayed)
+
+        console.log(unix)
+    });
+});
+*/
 
 const token = process.env.BOT_TOKEN || config.token;
 const prefix = process.env.BOT_PREFIX || config.prefix;
 const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
 const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
+const suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggestion_channel;
 
 
 const express = require('express')
@@ -19,6 +33,7 @@ const app = express()
 const port = process.env.PORT || 3000
 
 const { wakeDyno, wakeDynos } = require('heroku-keep-awake');
+const e = require('express');
 
 const DYNO_URL = 'https://lostlands-clansbot.herokuapp.com/';
 
@@ -69,7 +84,8 @@ client.on('message', (message) => {
             .setURL('https://lostlands.co')
             .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
             .addFields(
-                { name: '**Server status**', value: '`-status`'},
+                { name: '**Server status:**', value: '`-status`'},
+                { name: '**Suggestion:**', value: '`-suggest {suggestion}`'},
                 { name: '**Eat?**', value: '`-eat`'},
             )
             .setTimestamp()
@@ -85,6 +101,76 @@ client.on('message', (message) => {
         }
         
     } 
+    else if (command == "suggest" || command == "suggestion") {
+
+        noPrefix = message.content.slice(prefix.length).trim()
+        suggestion = noPrefix.substr(noPrefix.indexOf(" ") + 1)
+
+        
+        if (typeof suggestion === 'undefined') {
+            return message.channel.send("Usage: `-suggestion {suggestion}`");
+        }
+        else {
+            if (suggestion.length < 2048) {
+                const suggestionEmbed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setAuthor("Suggestion from "+message.author.username, message.author.avatarURL()+"")
+                .setDescription(suggestion)
+                .setTimestamp()
+                .setFooter("Lost Lands (Open)")
+                client.channels.cache.get(suggestion_channel).send({embed: suggestionEmbed}).then(embedMessage => {
+                    embedMessage.react('✅').then(() => embedMessage.react('❌')); 
+                });
+                return message.reply("Thanks for your suggestion!");
+            }
+            else {
+                message.reply("That suggestion is too long. Suggestions must be less than 2048 characters.")
+            }
+    
+            
+        }
+    }
+    else if (command == "accept") {
+
+        if (!message.member.roles.cache.some((role) => role.name === "2b2t.lol")) {
+            return message.reply("You do not have permission accept suggestions");
+        }
+        else {
+            client.channels.cache.get(suggestion_channel).messages.fetch(args[0])
+            .then(function(message) {
+                var messageData = JSON.parse(JSON.stringify(message.embeds[0]))
+                console.log(messageData.description);
+                const suggestionEmbed = new Discord.MessageEmbed()
+                    .setColor('#75ed0c')
+                    .setAuthor(messageData.author.name, messageData.author.name.iconURL)
+                    .setDescription(""+messageData.description+"")
+                    .setTimestamp(messageData.createdTimestamp)
+                    .setFooter("Lost Lands (Accepted)")
+                message.edit(suggestionEmbed);
+            });
+            return message.reply("Accepted suggestion.")
+        }
+    }
+    else if (command == "deny") {
+
+        if (!message.member.roles.cache.some((role) => role.name === "2b2t.lol")) {
+            return message.reply("You do not have permission deny suggestions");
+        }
+        else {
+            client.channels.cache.get(suggestion_channel).messages.fetch(args[0])
+            .then(function(message) {
+                var messageData = JSON.parse(JSON.stringify(message.embeds[0]))
+                const suggestionEmbed = new Discord.MessageEmbed()
+                    .setColor('#ed260c')
+                    .setAuthor(messageData.author.name, messageData.author.name.iconURL)
+                    .setDescription(""+messageData.description+"")
+                    .setTimestamp(messageData.createdTimestamp)
+                    .setFooter("Lost Lands (Denied)")
+                message.edit(suggestionEmbed);
+            });
+            return message.reply("Demnied suggestion.")
+        }
+    }
     else if (command == 'stats' || command == 'status') {
 
     request.post(
