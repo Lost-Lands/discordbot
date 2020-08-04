@@ -75,7 +75,13 @@ client.on('message', (message) => {
 
         message.channel.send(helpEmbed);
     } else if (command === 'eat') {
-        message.channel.send('***eat***');
+        if (message.channel.id == "735692290919628881") {
+            message.channel.send('***eat***');
+        }
+        else {
+            message.reply("this isnt #eat 🤨");
+        }
+        
     } 
     else if (command == 'stats' || command == 'status') {
 
