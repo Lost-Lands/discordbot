@@ -67,12 +67,15 @@ client.on('message', (message) => {
             .setURL('https://lostlands.co')
             .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
             .addFields(
-                { name: 'Server status', value: '`-status`', inline: true },
+                { name: 'Server status', value: '`-status`'},
+                { name: 'Eat?', value: '`-eat`'},
             )
             .setTimestamp()
             .setTimestamp().setFooter('Lost Lands')
 
         message.channel.send(helpEmbed);
+    } else if (command === 'eat') {
+        message.channel.send('***eat***');
     } 
     else if (command == 'stats' || command == 'status') {
 
