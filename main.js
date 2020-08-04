@@ -33,6 +33,7 @@ console.log(`Clans Bot Web UI Running`)
 { prefix, token, clans_category } 
 
 const client = new Discord.Client();
+const talkedRecently = new Set();
 
 client.once('ready', () => {
     console.log('Lost Lands Clan bot running.');
@@ -45,7 +46,11 @@ client.on('message', (message) => {
     if (!message.guild) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const command = args.shift().toLowerCase();
+    const command = args.shift().toLowerCase();
+    
+    if (talkedRecently.has(message.author.id)) {
+        message.reply("You must wait before commands.");
+    } else {
 
 	if (command === 'ping') {
         message.channel.send('Pong!');
@@ -379,6 +384,12 @@ client.on('message', (message) => {
     } else {
         return message.reply("Clans are not open yet!");
     }
+}
+talkedRecently.add(message.author.id);
+    setTimeout(() => {
+        // Removes the user from the set after a minute
+        talkedRecently.delete(message.author.id);
+    }, 30000);
 }
 });
 
