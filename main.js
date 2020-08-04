@@ -69,8 +69,8 @@ client.on('message', (message) => {
             .setURL('https://lostlands.co')
             .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
             .addFields(
-                { name: 'Server status', value: '`-status`'},
-                { name: 'Eat?', value: '`-eat`'},
+                { name: '**Server status**', value: '`-status`'},
+                { name: '**Eat?**', value: '`-eat`'},
             )
             .setTimestamp()
             .setTimestamp().setFooter('Lost Lands')
