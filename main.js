@@ -49,7 +49,7 @@ client.on('message', (message) => {
     const command = args.shift().toLowerCase();
     
     if (talkedRecently.has(message.author.id)) {
-        message.reply("You must wait before commands.");
+        message.reply("You must wait `8s` before commands.");
     } else {
 
 	if (command === 'ping') {
@@ -389,7 +389,7 @@ talkedRecently.add(message.author.id);
     setTimeout(() => {
         // Removes the user from the set after a minute
         talkedRecently.delete(message.author.id);
-    }, 10000);
+    }, 8000);
 }
 });
 
