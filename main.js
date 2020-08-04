@@ -81,7 +81,7 @@ client.on('message', (message) => {
                 .setColor('#0099ff')
                 .setTitle('Lost Lands Stats')
                 .setURL('https://status.lostlands.co/')
-                .addField('Discord Members', message.guild.memberCount, true)
+                .addField('Discord Members:', message.guild.memberCount, true)
                 .setTimestamp().setFooter('Lost Lands')
     
                 ms.init('srv03.lostlands.co', 25580, function(result)
@@ -96,17 +96,17 @@ client.on('message', (message) => {
                 //ms.latency
                 if(ms.online)
                 {
-                    statsEmbed.addField("Online Players", ms.current_players, true);
+                    statsEmbed.addField("Online Players:", ms.current_players, true);
                 }
                 body.monitors.forEach(function(server) {
                     if (server.status === 0) {
-                        statsEmbed.addField(server.friendly_name, '⚫ Paused')
+                        statsEmbed.addField(server.friendly_name+":", '⚫ Paused')
                     }
                     if (server.status === 2) {
-                        statsEmbed.addField(server.friendly_name, '🟢 Online')
+                        statsEmbed.addField(server.friendly_name+":", '🟢 Online')
                     }
                     else {
-                        statsEmbed.addField(server.friendly_name, '🟡 Unknown')
+                        statsEmbed.addField(server.friendly_name+":", '🟡 Unknown')
                     }
                     
                 })
