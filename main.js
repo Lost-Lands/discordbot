@@ -114,10 +114,17 @@ client.on('message', (message) => {
             if (suggestion.length < 2048) {
                 const suggestionEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
-                .setAuthor("Suggestion from "+message.author.username, message.author.avatarURL()+"")
                 .setDescription(suggestion)
                 .setTimestamp()
                 .setFooter("Lost Lands (Open)")
+
+                if (message.author.avatarURL() !== null) {
+                    suggestionEmbed.setAuthor("Suggestion from "+message.author.username, message.author.avatarURL())
+                }
+                else {
+                    suggestionEmbed.setAuthor("Suggestion from "+message.author.username)
+                }
+
                 client.channels.cache.get(suggestion_channel).send({embed: suggestionEmbed}).then(embedMessage => {
                     embedMessage.react('✅').then(() => embedMessage.react('❌')); 
                 });
@@ -138,14 +145,20 @@ client.on('message', (message) => {
         else {
             client.channels.cache.get(suggestion_channel).messages.fetch(args[0])
             .then(function(message) {
+                
                 var messageData = JSON.parse(JSON.stringify(message.embeds[0]))
-                console.log(messageData.description);
                 const suggestionEmbed = new Discord.MessageEmbed()
                     .setColor('#75ed0c')
-                    .setAuthor(messageData.author.name, messageData.author.name.iconURL)
                     .setDescription(""+messageData.description+"")
                     .setTimestamp(messageData.createdTimestamp)
                     .setFooter("Lost Lands (Accepted)")
+                if (messageData.author.icon_url !== null) {
+                    suggestionEmbed.setAuthor("Suggestion from "+message.author.username, messageData.author.icon_url)
+                }
+                else {
+                    suggestionEmbed.setAuthor("Suggestion from "+message.author.username)
+                }
+    
                 message.edit(suggestionEmbed);
             });
             return message.reply("Accepted suggestion.")
@@ -162,7 +175,7 @@ client.on('message', (message) => {
                 var messageData = JSON.parse(JSON.stringify(message.embeds[0]))
                 const suggestionEmbed = new Discord.MessageEmbed()
                     .setColor('#ed260c')
-                    .setAuthor(messageData.author.name, messageData.author.name.iconURL)
+                    .setAuthor(messageData.author.name, messageData.author.icon_url)
                     .setDescription(""+messageData.description+"")
                     .setTimestamp(messageData.createdTimestamp)
                     .setFooter("Lost Lands (Denied)")
