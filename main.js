@@ -3,11 +3,13 @@ const MessageEmbed = require('discord.js');
 const config = require('./config.json');
 const request = require('request');
 
+var ms = require("./minestat");
 var mysql = require('mysql');
 
 const token = process.env.BOT_TOKEN || config.token;
 const prefix = process.env.BOT_PREFIX || config.prefix;
 const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
+const admin_channel = process.env.BOT_ADMIN_CHANNEL || config.admin_channel;
 const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
 const suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggestion_channel;
 const mysql_host = process.env.MYSQL_HOST || config.mysql_host;
@@ -29,6 +31,7 @@ const port = process.env.PORT || 3000
 
 const { wakeDyno, wakeDynos } = require('heroku-keep-awake');
 const e = require('express');
+const { join } = require('path');
 
 const DYNO_URL = 'https://lostlands-clansbot.herokuapp.com/';
 
@@ -96,6 +99,86 @@ client.on('message', (message) => {
         }
         
     } 
+    else if (command == "player") {
+        var playerName = args[0];
+        var playerNameLowercase = playerName.replace(/\W/g, '').toLowerCase();
+        if (typeof playerName === 'undefined') {
+            return message.channel.send("Usage `-player {name}`");
+        }
+        else {
+            //SELECT * FROM wp_users WHERE user_login LIKE "${playerNameLowercase}"
+            connection.query(`
+            SELECT * FROM wp_users
+            INNER JOIN premium  
+            ON wp_users.realname = premium.name AND wp_users.user_login="${playerNameLowercase}"   
+            `, function (error, data) {
+                if (error) {
+                    return message.channel.send("That player has never played on Lost Lands before.");
+                }
+                else {
+                    console.log(data);
+                    var player = JSON.parse(JSON.stringify(data))[0];
+
+                    if (typeof player === 'undefined') {
+                        return message.channel.send("That player has never played on Lost Lands before.");
+                    }
+
+                    console.log(player);
+
+                    let joindate_ob = new Date(player.regdate);
+                    let joindate = ("0" + joindate_ob.getDate()).slice(-2);
+                    let joinmonth = ("0" + (joindate_ob.getMonth() + 1)).slice(-2);
+                    let joinyear = joindate_ob.getFullYear();
+                    let joinhours = joindate_ob.getHours();
+                    let joinminutes = joindate_ob.getMinutes();
+                    let joinseconds = joindate_ob.getSeconds();
+
+                    let logindate_ob = new Date(player.last_login);
+                    let logindate = ("0" + logindate_ob.getDate()).slice(-2);
+                    let loginmonth = ("0" + (logindate_ob.getMonth() + 1)).slice(-2);
+                    let loginyear = logindate_ob.getFullYear();
+                    let loginhours = logindate_ob.getHours();
+                    let loginminutes = logindate_ob.getMinutes();
+                    let loginseconds = logindate_ob.getSeconds();
+
+                    var joindate_pretty = joinmonth+"/"+joindate+"/"+joinyear+" "+joinhours+":"+joinminutes+":"+joinseconds;
+                    var logindate_pretty = loginmonth+"/"+logindate+"/"+loginyear+" "+loginhours+":"+loginminutes+":"+loginseconds;
+
+
+                    const playerEmbed = new Discord.MessageEmbed()
+                        .setColor('#0099ff')
+                        .setAuthor(player.realname, 'https://minotar.net/avatar/'+player.realname,)
+                        .addFields(
+                            { name: '**First Joined**', value: joindate_pretty, inline: true },
+                            { name: '**Last Seen**', value: logindate_pretty, inline: true },
+                        )
+                        .setTimestamp()
+                        .setFooter('Lost Lands');
+
+                    console.log(joinmonth+" "+joindate);
+                
+                    if (joinmonth === "07" && joindate < "20") {
+                        playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/11")
+                    }
+                    console.log(message.channel.id)
+                    console.log(admin_channel)
+                    if (message.channel.id == admin_channel) {
+                        playerEmbed.addFields(
+                            { name: '**Premium**', value: player.Premium, inline: true },
+                            { name: '**UUID**', value: player.UUID, inline: true },
+                            { name: '**Registered IP**', value: player.regip, inline: true },
+                            { name: '**Last IP**', value: player.last_ip, inline: true },
+                        )
+                    }
+
+                    message.channel.send(playerEmbed);
+
+
+                    console.log(player.realname);
+                }
+            });
+        }
+    }
     else if (command == "suggest" || command == "suggestion") {
 
         noPrefix = message.content.slice(prefix.length).trim()
