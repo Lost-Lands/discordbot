@@ -118,7 +118,6 @@ client.on('message', (message) => {
                     return message.channel.send("That player has never played on Lost Lands before.");
                 }
                 else {
-                    console.log(data);
                     var player = JSON.parse(JSON.stringify(data))[0];
 
                     if (typeof player === 'undefined') {
@@ -169,7 +168,6 @@ client.on('message', (message) => {
                     if (message.channel.id == admin_channel) {
 
                         var location_json = geoip.lookup(player.last_ip)
-                        console.log(location_json);
                         var location = "Coordinates: "+location_json.ll[0]+", "+location_json.ll[1]+"\n"+location_json.city+", "+location_json.region+", "+location_json.country;
 
                         playerEmbed.addFields(
