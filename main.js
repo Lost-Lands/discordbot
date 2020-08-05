@@ -113,6 +113,7 @@ client.on('message', (message) => {
             ON wp_users.realname = premium.name AND wp_users.user_login="${playerNameLowercase}"   
             `, function (error, data) {
                 if (error) {
+                    console.log(error)
                     return message.channel.send("That player has never played on Lost Lands before.");
                 }
                 else {
