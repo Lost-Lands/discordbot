@@ -147,6 +147,7 @@ client.on('message', (message) => {
 
                     const playerEmbed = new Discord.MessageEmbed()
                         .setColor('#0099ff')
+                        .setTitle('Player Profile')
                         .setAuthor(player.realname, 'https://minotar.net/avatar/'+player.realname,)
                         .addFields(
                             { name: '**First Joined**', value: joindate_pretty, inline: true },
@@ -160,7 +161,9 @@ client.on('message', (message) => {
                     if (joinmonth === "07" && joindate < "20") {
                         playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/11")
                     }
-                    console.log(message.channel.id)
+                    if (player.Premium === 1) {
+                        playerEmbed.setURL('https://namemc.com/profile/'+player.UUID);
+                    }
                     console.log(admin_channel)
                     if (message.channel.id == admin_channel) {
                         playerEmbed.addFields(
