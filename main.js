@@ -3,14 +3,24 @@ const MessageEmbed = require('discord.js');
 const config = require('./config.json');
 const request = require('request');
 
+var mysql = require('mysql');
+
 const token = process.env.BOT_TOKEN || config.token;
 const prefix = process.env.BOT_PREFIX || config.prefix;
 const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
 const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
 const suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggestion_channel;
-const ftp_host = process.env.FTP_HOST || config.ftp_host;
-const ftp_user = process.env.FTP_USER || config.ftp_user;
-const ftp_pass = process.env.FTP_PASS || config.ftp_pass;
+const mysql_host = process.env.MYSQL_HOST || config.mysql_host;
+const mysql_user = process.env.MYSQL_USER || config.mysql_user;
+const mysql_pass = process.env.MYSQL_PASS || config.mysql_pass;
+const mysql_database = process.env.MYSQL_PASS || config.mysql_database;
+
+var connection = mysql.createConnection({
+    host     : mysql_host,
+    user     : mysql_user,
+    password : mysql_pass,
+    database : mysql_database
+  });
 
 const express = require('express')
 
@@ -161,7 +171,7 @@ client.on('message', (message) => {
                 
                 var messageData = JSON.parse(JSON.stringify(message.embeds[0]))
                 const suggestionEmbed = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#E9251A')
                     .setDescription(""+messageData.description+"")
                     .setTimestamp(messageData.createdTimestamp)
                     .setFooter("Lost Lands (Denied)")
