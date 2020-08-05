@@ -15,7 +15,7 @@ const suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggesti
 const mysql_host = process.env.MYSQL_HOST || config.mysql_host;
 const mysql_user = process.env.MYSQL_USER || config.mysql_user;
 const mysql_pass = process.env.MYSQL_PASS || config.mysql_pass;
-const mysql_database = process.env.MYSQL_PASS || config.mysql_database;
+const mysql_database = process.env.MYSQL_DATABASE || config.mysql_database;
 
 var connection = mysql.createConnection({
     host     : mysql_host,
@@ -113,7 +113,6 @@ client.on('message', (message) => {
             ON wp_users.realname = premium.name AND wp_users.user_login="${playerNameLowercase}"   
             `, function (error, data) {
                 if (error) {
-                    console.log(error)
                     return message.channel.send("That player has never played on Lost Lands before.");
                 }
                 else {
