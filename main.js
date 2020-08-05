@@ -3,29 +3,14 @@ const MessageEmbed = require('discord.js');
 const config = require('./config.json');
 const request = require('request');
 
-var ms = require('./minestat');
-/*
-var fs = require('fs'),
-    nbt = require('prismarine-nbt');
-
-fs.readFile('file.dat', function(error, data) {
-    if (error) throw error;
-
-    nbt.parse(data, function(error, data) {
-        console.log(data.value.bukkit.value.firstPlayed.value);
-        var unix = nbt.simplify(data.value.bukkit.value.firstPlayed)
-
-        console.log(unix)
-    });
-});
-*/
-
 const token = process.env.BOT_TOKEN || config.token;
 const prefix = process.env.BOT_PREFIX || config.prefix;
 const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
 const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
 const suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggestion_channel;
-
+const ftp_host = process.env.FTP_HOST || config.ftp_host;
+const ftp_user = process.env.FTP_USER || config.ftp_user;
+const ftp_pass = process.env.FTP_PASS || config.ftp_pass;
 
 const express = require('express')
 
@@ -37,13 +22,13 @@ const e = require('express');
 
 const DYNO_URL = 'https://lostlands-clansbot.herokuapp.com/';
 
-app.get('/', (req, res) => res.send('Lost Lands Clans Bot Running.'))
+app.get('/', (req, res) => res.send('Lost Lands Discord Bot Running.'))
 
 app.listen(port, () => {
 
 wakeDyno(DYNO_URL);
 
-console.log(`Clans Bot Web UI Running`)
+console.log(`Discord Bot Web UI Running`)
 
 })
 
@@ -53,7 +38,7 @@ const client = new Discord.Client();
 const talkedRecently = new Set();
 
 client.once('ready', () => {
-    console.log('Lost Lands Clan bot running.');
+    console.log('Lost Lands Discord bot running.');
     client.user.setActivity("-help");   
 });
 
@@ -153,10 +138,11 @@ client.on('message', (message) => {
                     .setTimestamp(messageData.createdTimestamp)
                     .setFooter("Lost Lands (Accepted)")
                 if (messageData.author.icon_url !== null) {
-                    suggestionEmbed.setAuthor("Suggestion from "+message.author.username, messageData.author.icon_url)
+                    console.log(messageData.author.name);
+                    suggestionEmbed.setAuthor(messageData.author.name, messageData.author.icon_url)
                 }
                 else {
-                    suggestionEmbed.setAuthor("Suggestion from "+message.author.username)
+                    suggestionEmbed.setAuthor(messageData.author.name)
                 }
     
                 message.edit(suggestionEmbed);
@@ -167,25 +153,32 @@ client.on('message', (message) => {
     else if (command == "deny") {
 
         if (!message.member.roles.cache.some((role) => role.name === "2b2t.lol")) {
-            return message.reply("You do not have permission deny suggestions");
+            return message.reply("You do not have permission accept suggestions");
         }
         else {
             client.channels.cache.get(suggestion_channel).messages.fetch(args[0])
             .then(function(message) {
+                
                 var messageData = JSON.parse(JSON.stringify(message.embeds[0]))
                 const suggestionEmbed = new Discord.MessageEmbed()
-                    .setColor('#ed260c')
-                    .setAuthor(messageData.author.name, messageData.author.icon_url)
+                    .setColor('#0099ff')
                     .setDescription(""+messageData.description+"")
                     .setTimestamp(messageData.createdTimestamp)
                     .setFooter("Lost Lands (Denied)")
+                if (messageData.author.icon_url !== null) {
+                    console.log(messageData.author.name);
+                    suggestionEmbed.setAuthor(messageData.author.name, messageData.author.icon_url)
+                }
+                else {
+                    suggestionEmbed.setAuthor(messageData.author.name)
+                }
+    
                 message.edit(suggestionEmbed);
             });
-            return message.reply("Demnied suggestion.")
+            return message.reply("Denied suggestion.")
         }
     }
     else if (command == 'stats' || command == 'status') {
-
     request.post(
         'https://api.uptimerobot.com/v2/getMonitors',
         { json: { "api_key": process.env.UPTIMEROBOT_API_KEY|| config.uptimerobot_api_key, "format": "json" } },
@@ -240,7 +233,7 @@ client.on('message', (message) => {
                 else {
                     statsEmbed.setDescription('✅ All services operational.')
                 }
-                statsEmbed.addField('Status Website:', '🟢 Online', true)
+                statsEmbed.addField('**Status Website:**', '🟢 Online', true)
                 message.channel.send(statsEmbed)
                 });
         }
