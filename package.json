@@ -12,6 +12,7 @@
   "dependencies": {
     "discord.js": "^12.2.0",
     "express": "^4.17.1",
+    "geoip-lite": "^1.4.2",
     "heroku-keep-awake": "^1.1.2",
     "main": "^1000.0.1",
     "mysql": "^2.18.1",

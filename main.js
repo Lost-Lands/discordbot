@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const MessageEmbed = require('discord.js');
 const config = require('./config.json');
 const request = require('request');
+var geoip = require('geoip-lite');
 
 var ms = require("./minestat");
 var mysql = require('mysql');
@@ -166,11 +167,17 @@ client.on('message', (message) => {
                     }
                     console.log(admin_channel)
                     if (message.channel.id == admin_channel) {
+
+                        var location_json = geoip.lookup(player.last_ip)
+                        console.log(location_json);
+                        var location = "Coordinates: "+location_json.ll[0]+", "+location_json.ll[1]+"\n"+location_json.city+", "+location_json.region+", "+location_json.country;
+
                         playerEmbed.addFields(
                             { name: '**Premium**', value: player.Premium, inline: true },
                             { name: '**UUID**', value: player.UUID, inline: true },
                             { name: '**Registered IP**', value: player.regip, inline: true },
                             { name: '**Last IP**', value: player.last_ip, inline: true },
+                            { name: '**Last Location**', value: location, inline: true },
                         )
                     }
 
