@@ -123,7 +123,6 @@ client.on('message', (message) => {
                         return message.channel.send("That player has never played on Lost Lands before.");
                     }
 
-                    console.log(player);
 
                     let joindate_ob = new Date(player.regdate);
                     let joindate = ("0" + joindate_ob.getDate()).slice(-2);
@@ -159,7 +158,7 @@ client.on('message', (message) => {
                     console.log(joinmonth+" "+joindate);
                 
                     if (joinmonth === "07" && joindate < "20") {
-                        playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/11")
+                        playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/10")
                     }
                     if (player.Premium === 1) {
                         playerEmbed.setURL('https://namemc.com/profile/'+player.UUID);
