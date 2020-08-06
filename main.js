@@ -13,7 +13,7 @@ var mysql = require('mysql');
 const token = process.env.BOT_TOKEN || config.token;
 const prefix = process.env.BOT_PREFIX || config.prefix;
 const clans_category = process.env.BOT_CLANS_CATEGORY || config.clans_category;
-const admin_channel = process.env.BOT_ADMIN_CHANNEL || config.admin_channel;
+const admin_guild = process.env.BOT_ADMIN_GUILD || config.admin_guild;
 const invite_channel = process.env.BOT_INVITE_CHANNEL || config.invite_channel;
 const suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggestion_channel;
 const mysql_host = process.env.MYSQL_HOST || config.mysql_host;
@@ -130,7 +130,6 @@ c.on('ready', function() {
                 ON wp_users.realname = premium.name AND wp_users.user_login=${username}  
                 `, function (error, data) {
                     if (error) {
-                        return console.log(error);
                         return message.channel.send("That player has never played on Lost Lands before.");
                     }
                     else {
@@ -178,8 +177,9 @@ c.on('ready', function() {
                         if (player.Premium === 1) {
                             playerEmbed.setURL('https://namemc.com/profile/'+player.UUID);
                         }
-                        console.log(admin_channel)
-                        if (message.channel.id !== admin_channel) {
+                        console.log("Guild: "+message.guild.id)
+                        console.log("Set Guild: "+admin_guild)
+                        if (message.guild.id !== admin_guild) {
                             message.channel.send(playerEmbed);
                         } else {
                             var location_json = geoip.lookup(player.last_ip)
