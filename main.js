@@ -121,12 +121,16 @@ c.on('ready', function() {
             else {
                 var playerNameLowercase = playerName.replace(/\W/g, '').toLowerCase();
                 //SELECT * FROM wp_users WHERE user_login LIKE "${playerNameLowercase}"
+
+                var username = mysql.format(connection.escape(playerNameLowercase))
+                console.log(username);
                 connection.query(`
                 SELECT * FROM wp_users
                 INNER JOIN premium  
-                ON wp_users.realname = premium.name AND wp_users.user_login="${playerNameLowercase}"   
+                ON wp_users.realname = premium.name AND wp_users.user_login=${username}  
                 `, function (error, data) {
                     if (error) {
+                        return console.log(error);
                         return message.channel.send("That player has never played on Lost Lands before.");
                     }
                     else {
