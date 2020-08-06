@@ -322,7 +322,7 @@ c.on('ready', function() {
 
 
 
-                if (!message.member.roles.cache.some((role) => role.name === "Admin")) {
+                if (!message.member.roles.cache.some((role) => role.name === "2b2t.lol")) {
                     return message.reply("You do not have permission accept suggestions");
                 } else {
 
@@ -352,7 +352,7 @@ c.on('ready', function() {
                 }
             } else if (command == "deny") {
 
-                if (!message.member.roles.cache.some((role) => role.name === "Admin")) {
+                if (!message.member.roles.cache.some((role) => role.name === "2b2t.lol")) {
                     return message.reply("You do not have permission deny suggestions");
                 } else {
 
