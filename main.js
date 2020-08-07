@@ -53,6 +53,10 @@ const DYNO_URL = 'https://lostlands-clansbot.herokuapp.com/';
 
 app.get('/', (req, res) => res.send('Lost Lands Discord Bot Running.'))
 
+app.get('/api/votes', function(req,res) {
+    
+});
+
 app.listen(port, () => {
 
     wakeDyno(DYNO_URL);
@@ -124,17 +128,18 @@ c.on('ready', function() {
                 var playerName = args[0];
                 if (typeof playerName === 'undefined') {
                     return message.channel.send("Usage `-player {name}`");
+                } else if (args[0] == "admin"){
+                    return message.channel.send("That player has never played on Lost Lands before.");
                 } else {
                     var playerNameLowercase = playerName.replace(/\W/g, '').toLowerCase();
                     //SELECT * FROM wp_users WHERE user_login LIKE "${playerNameLowercase}"
-
                     var username = mysql.format(connection.escape(playerNameLowercase))
                     console.log(username);
                     connection.query(`
-                SELECT * FROM wp_users
-                INNER JOIN premium  
-                ON wp_users.realname = premium.name AND wp_users.user_login=${username}  
-                `, function(error, data) {
+                        SELECT * FROM wp_users
+                        INNER JOIN premium  
+                        ON wp_users.realname = premium.name AND wp_users.user_login=${username} 
+                    `, function(error, data) {
                         if (error) {
                             return message.channel.send("That player has never played on Lost Lands before.");
                         } else {
@@ -144,7 +149,9 @@ c.on('ready', function() {
                                 return message.channel.send("That player has never played on Lost Lands before.");
                             }
 
-
+                            
+                            
+            
                             let joindate_ob = new Date(player.regdate);
                             let joindate = ("0" + joindate_ob.getDate()).slice(-2);
                             let joinmonth = ("0" + (joindate_ob.getMonth() + 1)).slice(-2);
@@ -163,7 +170,6 @@ c.on('ready', function() {
 
                             var joindate_pretty = joinmonth + "/" + joindate + "/" + joinyear + " " + joinhours + ":" + joinminutes + ":" + joinseconds;
                             var logindate_pretty = loginmonth + "/" + logindate + "/" + loginyear + " " + loginhours + ":" + loginminutes + ":" + loginseconds;
-
 
                             const playerEmbed = new Discord.MessageEmbed()
                                 .setColor('#0099ff')
@@ -184,97 +190,149 @@ c.on('ready', function() {
                             if (joinmonth === "07" && joindate < "20") {
                                 playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/10")
                             }
-                            if (player.Premium === 1) {
-                                playerEmbed.setURL('https://namemc.com/profile/' + player.UUID);
-                            }
 
-                            //Check if command is run inside the admin guild
-                            if (message.guild.id !== admin_guild) {
-                                //false
-                                message.channel.send(playerEmbed);
-                            } else {
-                                //true
-                                var location_json = geoip.lookup(player.last_ip)
-                                var location = "Coordinates: " + location_json.ll[0] + ", " + location_json.ll[1] + "\n" + location_json.city + ", " + location_json.region + ", " + location_json.country;
 
-                                playerEmbed.addFields({
-                                    name: '**Premium**',
-                                    value: player.Premium,
-                                    inline: true
-                                }, {
-                                    name: '**UUID**',
-                                    value: player.UUID,
-                                    inline: true
-                                }, {
-                                    name: '**Registered IP**',
-                                    value: player.regip,
-                                    inline: true
-                                }, {
-                                    name: '**Last IP**',
-                                    value: player.last_ip,
-                                    inline: true
-                                }, {
-                                    name: '**Last Geolocation**',
-                                    value: location,
-                                    inline: true
-                                }, )
-                                var dashedUUID = require("add-dashes-to-uuid")(player.UUID)
-                                var essentialsPath = "/plugins/Essentials/userdata/" + dashedUUID + ".yml"
+                            //Retrive proper UUID
 
-                                c.get(essentialsPath, function(err, stream) {
-                                    if (err) {
-                                        playerEmbed.addField("**Essentials Data:**", "Unable to data.", true);
+                            request('http://tools.glowingmines.eu/convertor/nick/'+player.realname, function (error, response, body) {
+                                console.error('error:', error); // Print the error if one occurred
+
+
+                                console.log('glowingmines statusCode:', response && response.statusCode); // Print the response status code if a response was received
+
+                                var uuidAPI = JSON.parse(body);
+
+                                //f72c7e6c-cff0-31b6-bf47-cce2ec75ff6a
+
+                                if (player.UUID) {
+                                    var dashedUUID = require("add-dashes-to-uuid")(player.UUID)
+                                }
+                                else {
+                                    var dashedUUID = uuidAPI.offlinesplitteduuid
+                                }
+
+
+                                if (player.Premium === 1) {
+                                    playerEmbed.setURL('https://namemc.com/profile/' + player.UUID);
+                                }
+                                var uuid = mysql.format(connection.escape(dashedUUID))
+
+                                console.log(uuid);
+
+                                connection.query(`SELECT * from votes WHERE uuid = ${uuid}`, function (error, data) {
+                                    if (error) {
+                                        console.log(error);
+                                        playerEmbed.addField("**Votes**", "0", true);
                                     } else {
-                                        var content = '';
-                                        stream.on('data', function(chunk) {
-                                            console.log(content);
-                                            content += chunk.toString();
-                                        });
-                                        stream.on('end', function() {
-                                            var essentials = YAML.parse(content)
+                                        var votes = JSON.parse(JSON.stringify(data));
+                                        playerEmbed.addField("**Votes**", votes[0].votes, true);
 
-                                            function world(world) {
-                                                if (world == "anarchy2020") {
-                                                    return "overworld"
-                                                } else if (world == "anarchy2020_nether") {
-                                                    return "nether"
-                                                } else if (world == "anarchy2020_the_end") {
-                                                    return "end"
-                                                } else {
-                                                    return "unknown world"
-                                                }
-                                            }
 
-                                            var logoutLocation = world(essentials.logoutlocation['world']) + ": " + essentials.logoutlocation['x'] + ", " + essentials.logoutlocation['y'] + ", " + essentials.logoutlocation['z']
-
-                                            console.log(logoutLocation);
-
-                                            var lastLocation = world(essentials.lastlocation['world']) + ": " + essentials.lastlocation['x'] + ", " + essentials.lastlocation['y'] + ", " + essentials.lastlocation['z']
-
-                                            console.log(lastLocation);
-
-                                            playerEmbed.addFields({
-                                                name: '**Logout Location**',
-                                                value: logoutLocation,
-                                                inline: true
-                                            }, {
-                                                name: '**Last Location**',
-                                                value: lastLocation,
-                                                inline: true
-                                            }, {
-                                                name: '**Last Recorded Username**',
-                                                value: essentials.lastAccountName,
-                                                inline: true
-                                            }, )
-                                            message.channel.send(playerEmbed).then(function() {
-                                                essentials = undefined;
-                                                content = undefined;
+                                        //Check if command is run inside the admin guild
+                                if (message.guild.id == admin_guild) {
+                                    //true
+                                    var location_json = geoip.lookup(player.last_ip)
+                                    var location = "Coordinates: " + location_json.ll[0] + ", " + location_json.ll[1] + "\n" + location_json.city + ", " + location_json.region + ", " + location_json.country;
+    
+                                    playerEmbed.addFields({
+                                        name: '**Premium**',
+                                        value: player.Premium,
+                                        inline: true
+                                    }, {
+                                        name: '**UUID**',
+                                        value: dashedUUID,
+                                        inline: true
+                                    }, {
+                                        name: '**Registered IP**',
+                                        value: player.regip,
+                                        inline: true
+                                    }, {
+                                        name: '**Last IP**',
+                                        value: player.last_ip,
+                                        inline: true
+                                    }, {
+                                        name: '**Last Geolocation**',
+                                        value: location,
+                                        inline: true
+                                    }, )
+                                    var essentialsPath = "/plugins/Essentials/userdata/" + dashedUUID + ".yml"
+    
+                                    c.get(essentialsPath, function(err, stream) {
+                                        if (err) {
+                                            playerEmbed.addField("**Essentials Data:**", "Unable to data.", true);
+                                        } else {
+                                            var content = '';
+                                            stream.on('data', function(chunk) {
+                                                console.log(content);
+                                                content += chunk.toString();
                                             });
-                                        });
+                                            stream.on('end', function() {
+                                                var essentials = YAML.parse(content)
+    
+                                                function world(world) {
+                                                    if (world == "anarchy2020") {
+                                                        return "overworld"
+                                                    } else if (world == "anarchy2020_nether") {
+                                                        return "nether"
+                                                    } else if (world == "anarchy2020_the_end") {
+                                                        return "end"
+                                                    } else {
+                                                        return "unknown world"
+                                                    }
+                                                }
+    
+                                                var logoutLocation = world(essentials.logoutlocation['world']) + ": " + essentials.logoutlocation['x'] + ", " + essentials.logoutlocation['y'] + ", " + essentials.logoutlocation['z']
+    
+                                                console.log(logoutLocation);
+    
+                                                var lastLocation = world(essentials.lastlocation['world']) + ": " + essentials.lastlocation['x'] + ", " + essentials.lastlocation['y'] + ", " + essentials.lastlocation['z']
+    
+                                                console.log(lastLocation);
+    
+                                                playerEmbed.addFields({
+                                                    name: '**Logout Location**',
+                                                    value: logoutLocation,
+                                                    inline: true
+                                                }, {
+                                                    name: '**Last Location**',
+                                                    value: lastLocation,
+                                                    inline: true
+                                                }, {
+                                                    name: '**Last Recorded Username**',
+                                                    value: essentials.lastAccountName,
+                                                    inline: true
+                                                }, )
+    
+                                                var uuid = mysql.format(connection.escape(dashedUUID))
+                                                connection.query(`SELECT * from votes WHERE uuid = ${uuid}`, function (error, data) {
+                                                    if (error) {
+                                                        console.log(error);
+                                                        playerEmbed.addField("**Votes**", "0", true);
+                                                    } else {
+                                                        if (data) {
+                                                            var votes = JSON.parse(JSON.stringify(data));
+                                                            console.log(votes[0]);
+                                                            playerEmbed.addField("**Votes**", votes[0].votes, true);
+                                                            
+                                                        } else {
+                                                            playerEmbed.addField("**Votes**", "0", true);
+                                                        }
+                                                        message.channel.send(playerEmbed).then(function() {
+                                                            essentials = undefined;
+                                                            content = undefined;
+                                                        });
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    })
+                                }
+                                else {
+                                    return message.channel.send(playerEmbed);
+                                }
                                     }
-                                })
-
-                            }
+                                });
+                            });
                         }
                     });
                 }
