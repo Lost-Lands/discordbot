@@ -279,8 +279,7 @@ c.on('ready', function() {
                                                     } else {
                                                         return "unknown world"
                                                     }
-                                                }
-    
+                                                }    
                                                 var logoutLocation = world(essentials.logoutlocation['world']) + ": " + essentials.logoutlocation['x'] + ", " + essentials.logoutlocation['y'] + ", " + essentials.logoutlocation['z']
     
                                                 console.log(logoutLocation);
@@ -303,19 +302,45 @@ c.on('ready', function() {
                                                     inline: true
                                                 }, )
     
-                                                var uuid = mysql.format(connection.escape(dashedUUID))
-                                                connection.query(`SELECT * from votes WHERE uuid = ${uuid}`, function (error, data) {
+                                                var lastip = mysql.format(connection.escape(player.last_ip))
+                                                var regip = mysql.format(connection.escape(player.regip))
+                                                connection.query(`
+                                                SELECT realname from wp_users WHERE last_ip = ${lastip}
+                                                UNION
+                                                SELECT realname from wp_users WHERE regip = ${regip}
+                                                UNION
+                                                SELECT realname from wp_users WHERE last_ip = ${regip}
+                                                UNION
+                                                SELECT 
+                                                realname from wp_users WHERE regip = ${lastip}
+                                                `, function (error, data) {
                                                     if (error) {
                                                         console.log(error);
-                                                        playerEmbed.addField("**Votes**", "0", true);
                                                     } else {
                                                         if (data) {
-                                                            var votes = JSON.parse(JSON.stringify(data));
-                                                            console.log(votes[0]);
-                                                            playerEmbed.addField("**Votes**", votes[0].votes, true);
+                                                            var player = JSON.parse(JSON.stringify(data));
+
+                                                            listalts_old = function(player) {
+                                                                Object.keys(player).forEach(function (name){
+                                                                    console.log(player[name]+"\n");
+                                                                    return JSON.stringify(player[name])+"\n"
+                                                                })
+                                                            }
+        
+                                                            var alts = "";
+                                                            var i;
+
+                                                            for (i = 0; i < player.length; i++) {
+                                                                console.log(player);
+                                                                alts += player[i].realname+"\n"
+                                                            }
+
+                                                        
+                                                            
+                                                            playerEmbed.addField("**Accounts**", alts, true);
                                                             
                                                         } else {
-                                                            playerEmbed.addField("**Votes**", "0", true);
+                                                            playerEmbed.addField("**Accounts**", "None", true);
                                                         }
                                                         message.channel.send(playerEmbed).then(function() {
                                                             essentials = undefined;
