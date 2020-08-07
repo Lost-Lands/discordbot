@@ -225,7 +225,14 @@ c.on('ready', function() {
                                         playerEmbed.addField("**Votes**", "0", true);
                                     } else {
                                         var votes = JSON.parse(JSON.stringify(data));
-                                        playerEmbed.addField("**Votes**", votes[0].votes, true);
+                                        console.log(votes);
+                                        if (votes === []) {
+                                            playerEmbed.addField("**Votes**", votes[0].votes, true)
+                                        }
+                                        else {
+                                            playerEmbed.addField("**Votes**", "0", true);
+                                        }
+                                        ;
 
 
                                         //Check if command is run inside the admin guild
