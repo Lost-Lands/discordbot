@@ -1,6 +1,15 @@
 {
 	"prefix": "-",
-	"token": "BOT TOKEN",
-	"clans_category": "Category",
-	"invite_channel": "Channel for invites"
+	"token": "DISCORD BOT TOKEN",
+	"suggestion_channel":"",
+	"admin_guild":"",
+	"admin_role":"Admin",
+	"uptimerobot_api_key": "",
+	"mysql_host": "",
+	"mysql_user":"",
+	"mysql_pass":"",
+	"mysql_database":"",
+	"ftp_host": "",
+	"ftp_user": "",
+	"ftp_pass": ""
 }
