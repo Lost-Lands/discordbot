@@ -1,33 +1,6 @@
-/*
-request('https://mcapi.us/server/status?ip=lostlands.co', function(error, response, body) {
-    if (!error && response.statusCode == 200) {
-        var mcapi = JSON.parse(body);
-        statsEmbed.addField("**Online Players:**", mcapi.players.now+"/"+mcapi.players.max, true);
-    }
-    else {
-        statsEmbed.addField("**Online Players:**", 'Error', true);
-    }
-    
-});
-*/
-
-
 const request = require('request');
-const player = require('./player');
+const ms = require("../minestat");
 module.exports = function(config, Discord, message) {
-    var playersString;
-    request('https://mcapi.us/server/status?ip=lostlands.co', function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var mcapi = JSON.parse(body);
-
-            playersString = mcapi.players.now+'/'+mcapi.players.max;
-
-        }
-        else {
-            playersString = 'Error';
-        }
-        
-    });
     request.post(
         'https://api.uptimerobot.com/v2/getMonitors', {
             json: {
@@ -39,22 +12,31 @@ module.exports = function(config, Discord, message) {
 
         function(error, response, body) {
             if (!error && response.statusCode == 200) {
-
                 const statsEmbed = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle('Lost Lands Status')
                     .setURL('https://status.lostlands.co/')
                     .addField('**Discord Members:**', message.guild.memberCount, true)
-            
-                    .setTimestamp().setFooter('Lost Lands')
-                
-                    
-                    
-                    statsEmbed.addField("**Online Players:**", playersString, true)
 
+                    .setTimestamp().setFooter('Lost Lands')
+
+                ms.init('srv03.lostlands.co', 25580, function(result) {
+                    //ms.address
+                    //ms.port
+                    //ms.online
+                    //ms.max_players
+                    //ms.current_players
+                    //ms.motd
+                    //ms.latency
+                    if (ms.online) {
+                        statsEmbed.addField("**Online Players:**", ms.current_players, true);
+                    } else {
+                        statsEmbed.addField("**Online Players:**", "Error", true);
+                    }
                     potentialOutage = false
                     outage = false
                     body.monitors.forEach(function(server) {
+                        console.log(server.friendly_name + ": " + server.status);
                         if (server.status === 0) {
                             statsEmbed.addField("**" + server.friendly_name + ":**", '⚫ Paused', true);
                         } else if (server.status === 2) {
@@ -77,10 +59,9 @@ module.exports = function(config, Discord, message) {
                     }
                     statsEmbed.addField('**Status Website:**', '🟢 Online', true)
                     message.channel.send(statsEmbed)
-                    
-                    
+                });
             } else {
-                message.channel.send("Unable to get server status.")
+                return callback("Unable to get server status.");
             }
         }
 
