@@ -19,7 +19,7 @@ const {
     join
 } = require('path');
 
-const DYNO_URL = 'https://lostlands-clansbot.herokuapp.com/';
+const DYNO_URL = 'https://lostlands-discordbot.herokuapp.com/';
 
 app.get('/', (req, res) => res.send('Lost Lands Discord Bot Running.'))
 
