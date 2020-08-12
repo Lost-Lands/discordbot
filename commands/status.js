@@ -14,8 +14,9 @@ request('https://mcapi.us/server/status?ip=lostlands.co', function(error, respon
 
 const request = require('request');
 const player = require('./player');
+var playersString;
 module.exports = function(config, Discord, message) {
-    var playersString;
+    
     request('https://mcapi.us/server/status?ip=lostlands.co', function(error, response, body) {
         if (!error && response.statusCode == 200) {
             var mcapi = JSON.parse(body);
