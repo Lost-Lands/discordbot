@@ -73,8 +73,10 @@ module.exports = function(args, config, Discord, message, connection, c) {
                 //Retrive proper UUID
 
                 request('http://tools.glowingmines.eu/convertor/nick/' + player.realname, function(error, response, body) {
-                    console.error('error:', error); // Print the error if one occurred
-
+                    if (error) {
+                        console.error('error:', error); // Print the error if one occurred
+                    }    
+                
                     var uuidAPI = JSON.parse(body);
 
                     if (player.UUID) {
@@ -83,25 +85,20 @@ module.exports = function(args, config, Discord, message, connection, c) {
                         var dashedUUID = uuidAPI.offlinesplitteduuid
                     }
 
-
                     if (player.Premium === 1) {
                         playerEmbed.setURL('https://namemc.com/profile/' + player.UUID);
                     }
+                    
                     var uuid = mysql.format(connection.escape(dashedUUID))
 
-                    var query = `SELECT * from votes WHERE uuid = ${uuid}`
-
-                    console.log(query);
-
-                    connection.query(query, function(error, data) {
+                    connection.query(`SELECT * from votes WHERE uuid = ${uuid}`, function(error, data) {
                         if(data) {
                             var votes = JSON.parse(JSON.stringify(data));
-                            if (votes[0].votes > 0) {
+                            if (votes[0]) {
                                 playerEmbed.addField("**Votes**", votes[0].votes, true)
                             } else {
                                 playerEmbed.addField("**Votes**", "0", true);
                             };
-
 
                             //Check if command is run inside the admin guild
                             if (message.guild.id == config.admin_guild) {
