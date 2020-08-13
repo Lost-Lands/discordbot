@@ -89,14 +89,14 @@ module.exports = function(args, config, Discord, message, connection, c) {
                     }
                     var uuid = mysql.format(connection.escape(dashedUUID))
 
+                    var query = `SELECT * from votes WHERE uuid = ${uuid}`
 
-                    connection.query(`SELECT * from votes WHERE uuid = ${uuid}`, function(error, data) {
-                        if (error) {
-                            console.log(error);
-                            playerEmbed.addField("**Votes**", "0", true);
-                        } else {
+                    console.log(query);
+
+                    connection.query(query, function(error, data) {
+                        if(data) {
                             var votes = JSON.parse(JSON.stringify(data));
-                            if (votes === []) {
+                            if (votes[0].votes > 0) {
                                 playerEmbed.addField("**Votes**", votes[0].votes, true)
                             } else {
                                 playerEmbed.addField("**Votes**", "0", true);
@@ -221,7 +221,10 @@ module.exports = function(args, config, Discord, message, connection, c) {
                             } else {
                                 return message.channel.send(playerEmbed);
                             }
+                        } else {
+                            return message.channel.send('SQL Error.');
                         }
+                            
                     });
                 });
             }
