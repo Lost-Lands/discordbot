@@ -68,18 +68,20 @@ c.on('ready', function() {
 
             if (command === 'ping') {
                 message.channel.send('Pong!');
-            } else if (command === 'rolestat') {
+            } else if (command == 'rolestat') {
                 message.guild.roles.fetch()
                     .then(roles => console.log(`There are ${roles.cache.size} roles.`))
                     .catch(console.error);
-            } else if (command === 'eat') {
+            } else if (command =='eat') {
                 if (message.channel.id == "735692290919628881") {
                     message.channel.send('***eat***');
                 } else {
                     message.reply("this isnt #eat 🤨");
                 }
-            } else if (command === 'help') {
+            } else if (command == 'help') {
                 require("./commands/help")(Discord, message);
+            } else if (command == 'achievements' || command == "achievement") {
+                require("./commands/achievement")(Discord, message);
             } else if (command == "player") {
                 require("./commands/player")(args, config, Discord, message, connection, c);
             } else if (command == "suggest" || command == "suggestion") {

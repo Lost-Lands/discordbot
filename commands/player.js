@@ -45,6 +45,7 @@ module.exports = function(args, config, Discord, message, connection, c) {
                 let loginhours = logindate_ob.getHours();
                 let loginminutes = logindate_ob.getMinutes();
                 let loginseconds = logindate_ob.getSeconds();
+                achievements = [];
 
                 var joindate_pretty = joinmonth + "/" + joindate + "/" + joinyear + " " + joinhours + ":" + joinminutes + ":" + joinseconds;
                 var logindate_pretty = loginmonth + "/" + logindate + "/" + loginyear + " " + loginhours + ":" + loginminutes + ":" + loginseconds;
@@ -67,6 +68,7 @@ module.exports = function(args, config, Discord, message, connection, c) {
 
                 if (joinmonth === "07" && joindate < "20") {
                     playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/10")
+                    achievements += "🔥"
                 }
 
 
@@ -90,16 +92,28 @@ module.exports = function(args, config, Discord, message, connection, c) {
                     }
                     
                     var uuid = mysql.format(connection.escape(dashedUUID))
-
                     connection.query(`SELECT * from votes WHERE uuid = ${uuid}`, function(error, data) {
+                        
                         if(data) {
                             var votes = JSON.parse(JSON.stringify(data));
                             if (votes[0]) {
                                 playerEmbed.addField("**Votes**", votes[0].votes, true)
+                                if (votes[0].votes > 99) {
+                                    achievements += "💯"
+                                }
+                                else if(votes[0].votes > 49) {
+                                    achievements += "🌈"
+                                }
+
                             } else {
                                 playerEmbed.addField("**Votes**", "0", true);
                             };
 
+                            if (achievements.length > 0) {
+                                playerEmbed.addField("**Achievements**", achievements, true);
+                            }
+
+                           
                             //Check if command is run inside the admin guild
                             if (message.guild.id == config.admin_guild) {
                                 //true
@@ -217,6 +231,7 @@ module.exports = function(args, config, Discord, message, connection, c) {
                                 })
                             } else {
                                 return message.channel.send(playerEmbed);
+                               
                             }
                         } else {
                             return message.channel.send('SQL Error.');

@@ -14,9 +14,12 @@ module.exports = function(Discord, message) {
             name: '**Player info:**',
             value: '`-player {name}`'
         }, {
+            name: '**List Possible Achievements**',
+            value: '`-achievements`'
+        }, {
             name: '**Eat?**',
             value: '`-eat`'
-        }, )
+        } )
         .setTimestamp()
         .setTimestamp().setFooter('Lost Lands')
 
