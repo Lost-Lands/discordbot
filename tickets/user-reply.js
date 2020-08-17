@@ -12,6 +12,8 @@ module.exports = function(args, config, Discord, client, message, db) {
                 const replyEmbed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setDescription(message.content)
+                .setTimestamp()
+                .setFooter('Lost Lands Tickets');
                 if (message.author.avatarURL() !== null) {
                     replyEmbed.setAuthor("Reply from " + message.author.username, message.author.avatarURL())
                 } else {

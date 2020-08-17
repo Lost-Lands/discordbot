@@ -15,6 +15,8 @@ module.exports = function(Discord, client, message, db) {
                     .setColor('#0099ff')
                     .setAuthor('Reply from Staff')
                     .setDescription(message.content)
+                    .setTimestamp()
+                    .setFooter('Lost Lands Tickets')
                 client.users.cache.get(result.userID).send(replyEmbed);
             }
 
