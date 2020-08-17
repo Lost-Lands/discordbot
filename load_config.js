@@ -13,3 +13,6 @@ exports.ftp_host = process.env.FTP_HOST || config.ftp_host;
 exports.ftp_user = process.env.FTP_USER || config.ftp_user;
 exports.ftp_pass = process.env.FTP_PASS || config.ftp_pass;
 exports.uptimerobot_api_key = process.env.UPTIMEROBOT_API_KEY || config.uptimerobot_api_key;
+exports.mongodb = process.env.MONGODB || config.mongodb;
+exports.ticketsCategory = process.env.TICKETS_CATEGORY || config.tickets_category;
+

@@ -1,9 +1,7 @@
 module.exports = function(config, Discord, client, message) {
-noPrefix = message.content.slice(config.prefix.length).trim()
-    suggestion = noPrefix.substr(noPrefix.indexOf(" ") + 1)
-
-
-    if (typeof suggestion === 'undefined') {
+    noPrefix = message.content.slice(config.prefix.length).trim()
+    suggestion = noPrefix.slice(7)
+    if (!suggestion) {
         return message.channel.send("Usage: `-suggestion {suggestion}`");
     } else {
         if (suggestion.length < 2048) {

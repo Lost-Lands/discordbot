@@ -4,6 +4,7 @@ var FTPClient = require('ftp');
 var c = new FTPClient();
 var mysql = require('mysql');
 const config = require("./load_config")
+var MongoClient = require('mongodb').MongoClient;
 
 const express = require('express')
 
@@ -54,53 +55,74 @@ c.on('ready', function() {
     });
 
     console.log("Connected to FTP");
-    client.on('message', (message) => {
 
-        if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-        if (!message.guild) return;
-
-        const args = message.content.slice(config.prefix.length).trim().split(/ +/);
-        const command = args.shift().toLowerCase();
-
-        if (talkedRecently.has(message.author.id)) {
-            message.reply("You must wait `8s` before commands.");
-        } else {
-
-            if (command === 'ping') {
-                message.channel.send('Pong!');
-            } else if (command == 'rolestat') {
-                message.guild.roles.fetch()
-                    .then(roles => console.log(`There are ${roles.cache.size} roles.`))
-                    .catch(console.error);
-            } else if (command =='eat') {
-                if (message.channel.id == "735692290919628881") {
-                    message.channel.send('***eat***');
+    MongoClient.connect(config.mongodb, function(err, db)  {
+        if (err) throw err;
+        client.on('message', (message) => {
+            const args = message.content.slice(config.prefix.length).trim().split(/ +/);
+            const command = args.shift().toLowerCase();
+            
+            if (message.guild) {
+                if (message.author.bot) return;
+                if (message.content.startsWith(config.prefix)) {
+                    if (talkedRecently.has(message.author.id)) {
+                        message.reply("You must wait `8s` before commands.");
+                    } else {
+            
+                        if (command === 'ping') {
+                            message.channel.send('Pong!');
+                        } else if (command == 'rolestat') {
+                            message.guild.roles.fetch()
+                                .then(roles => console.log(`There are ${roles.cache.size} roles.`))
+                                .catch(console.error);
+                        } else if (command =='eat') {
+                            if (message.channel.id == "735692290919628881") {
+                                message.channel.send('***eat***');
+                            } else {
+                                message.reply("this isnt #eat 🤨");
+                            }
+                        } else if (command == 'help') {
+                            require("./commands/help")(Discord, message);
+                        } else if (command == 'achievements' || command == "achievement") {
+                            require("./commands/achievement")(Discord, message);
+                        } else if (command == "player") {
+                            require("./commands/player")(args, config, Discord, message, connection, c);
+                        } else if (command == "suggest") {
+                            require("./commands/suggest")(config, Discord, client, message);
+                        } else if (command == "accept") {
+                            require("./commands/accept")(args, config, Discord, client,  message);
+                        } else if (command == "deny") {
+                            require("./commands/deny")(args, config, Discord, client, message);
+                        } else if (command == 'stats' || command == 'status') {
+                            require("./commands/status")(config, Discord, message);
+                        } 
+    
+                        //Ticketing
+                        else if (command == "tnew") {
+                            require("./tickets/new")(args, config, Discord, client, message, db);
+                        }
+            
+                        talkedRecently.add(message.author.id);
+                        setTimeout(() => {
+                            // Removes the user from the set after 8 seconds.
+                            talkedRecently.delete(message.author.id);
+                        }, 8000);
+                    }
                 } else {
-                    message.reply("this isnt #eat 🤨");
+                    if (message.channel.parentID === config.ticketsCategory) {
+                        require("./tickets/staff-reply")(Discord, client, message, db);
+                    }
                 }
-            } else if (command == 'help') {
-                require("./commands/help")(Discord, message);
-            } else if (command == 'achievements' || command == "achievement") {
-                require("./commands/achievement")(Discord, message);
-            } else if (command == "player") {
-                require("./commands/player")(args, config, Discord, message, connection, c);
-            } else if (command == "suggest" || command == "suggestion") {
-                require("./commands/suggest")(config, Discord, client, message);
-            } else if (command == "accept") {
-                require("./commands/accept")(args, config, Discord, client,  message);
-            } else if (command == "deny") {
-                require("./commands/deny")(args, config, Discord, client, message);
-            } else if (command == 'stats' || command == 'status') {
-                require("./commands/status")(config, Discord, message);
-                
-            }
+            } else {
 
-            talkedRecently.add(message.author.id);
-            setTimeout(() => {
-                // Removes the user from the set after 8 seconds.
-                talkedRecently.delete(message.author.id);
-            }, 8000);
-        }
+                //Direct Messages to the bot
+                if (command === "close") {
+                    require("./tickets/close")(args, config, Discord, client, message, db);
+                } else {
+                    require("./tickets/user-reply")(args, config, Discord, client, message, db);
+                }
+            }
+        });
     });
 });
 
