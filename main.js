@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const oldconfig = require('./config.json');
 var FTPClient = require('ftp');
 var c = new FTPClient();
 var mysql = require('mysql');
@@ -83,17 +82,24 @@ c.on('ready', function() {
                             }
                         } else if (command == 'help') {
                             require("./commands/help")(Discord, message);
+                            talkedRecently.add(message.author.id);
                         } else if (command == 'achievements' || command == "achievement") {
                             require("./commands/achievement")(Discord, message);
+                            talkedRecently.add(message.author.id);
                         } else if (command == "player") {
                             require("./commands/player")(args, config, Discord, message, connection, c);
+                            talkedRecently.add(message.author.id);
                         } else if (command == "suggest") {
                             require("./commands/suggest")(config, Discord, client, message);
+                            talkedRecently.add(message.author.id);
                         } else if (command == "accept") {
                             require("./commands/accept")(args, config, Discord, client,  message);
+                            talkedRecently.add(message.author.id);
                         } else if (command == "deny") {
                             require("./commands/deny")(args, config, Discord, client, message);
+                            talkedRecently.add(message.author.id);
                         } else if (command == 'stats' || command == 'status') {
+                            talkedRecently.add(message.author.id);
                             require("./commands/status")(config, Discord, message);
                         } 
     
@@ -101,8 +107,8 @@ c.on('ready', function() {
                         else if (command == "tnew") {
                             require("./tickets/new")(args, config, Discord, client, message, db);
                         }
-            
-                        talkedRecently.add(message.author.id);
+                        
+                        
                         setTimeout(() => {
                             // Removes the user from the set after 8 seconds.
                             talkedRecently.delete(message.author.id);
