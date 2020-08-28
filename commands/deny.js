@@ -8,12 +8,7 @@ module.exports = function(args, config, Discord, client, message) {
         }
 
         noPrefix = message.content.slice(config.prefix.length).trim()
-        staffresponse = noPrefix.slice(8 + args[0].length);
-
-        if (typeof staffresponse == 'undefined') {
-            return message.reply("Usage: `-accept {message ID} {response}` 1");
-        }
-
+        staffresponse = noPrefix.slice(6 + args[0].length);
         client.channels.cache.get(config.suggestion_channel).messages.fetch(args[0])
             .then(function(message) {
 
@@ -21,9 +16,12 @@ module.exports = function(args, config, Discord, client, message) {
                 const suggestionEmbed = new Discord.MessageEmbed()
                     .setColor('#E9251A')
                     .setDescription("" + messageData.description + "")
-                    .addField("Staff Response", staffresponse)
                     .setTimestamp(messageData.createdTimestamp)
-                    .setFooter("Lost Lands (Denied)")
+                    .setFooter("Lost Lands (Denied)");
+                if (staffresponse) {
+                    console.log("Response: "+staffresponse)
+                    suggestionEmbed.addField("Staff Response", staffresponse)
+                }
                 if (messageData.author.icon_url !== null) {
                     console.log(messageData.author.name);
                     suggestionEmbed.setAuthor(messageData.author.name, messageData.author.icon_url)
