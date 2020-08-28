@@ -7,6 +7,13 @@ module.exports = function(args, config, Discord, client, message) {
             return message.reply("Usage: `-deny {message ID}`");
         }
 
+        noPrefix = message.content.slice(config.prefix.length).trim()
+        staffresponse = noPrefix.slice(8 + args[0].length);
+
+        if (typeof staffresponse == 'undefined') {
+            return message.reply("Usage: `-accept {message ID} {response}` 1");
+        }
+
         client.channels.cache.get(config.suggestion_channel).messages.fetch(args[0])
             .then(function(message) {
 
@@ -14,6 +21,7 @@ module.exports = function(args, config, Discord, client, message) {
                 const suggestionEmbed = new Discord.MessageEmbed()
                     .setColor('#E9251A')
                     .setDescription("" + messageData.description + "")
+                    .addField("Staff Response", staffresponse)
                     .setTimestamp(messageData.createdTimestamp)
                     .setFooter("Lost Lands (Denied)")
                 if (messageData.author.icon_url !== null) {
