@@ -22,9 +22,23 @@ module.exports = function(config, Discord, client, message) {
             }).then(embedMessage => {
                 embedMessage.react('✅').then(() => embedMessage.react('❌'));
             });
-            return message.reply("Thanks for your suggestion!");
+            message.delete();
+            return message.reply("Thanks for your suggestion!")
+            .then(msg => {
+                msg.delete({ timeout: 5000 })
+              })
+              .catch(err =>{
+                  console.log(err);
+              });
         } else {
-            message.reply("That suggestion is too long. Suggestions must be less than 2048 characters.")
+            message.delete();
+            return message.reply("That suggestion is too long. Suggestions must be less than 2048 characters.")
+            .then(msg => {
+                msg.delete({ timeout: 5000 })
+              })
+              .catch(err =>{
+                  console.log(err);
+              });
         }
 
 
