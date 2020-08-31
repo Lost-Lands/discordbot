@@ -81,7 +81,7 @@ c.on('ready', function() {
                                 message.reply("this isnt #eat 🤨");
                             }
                         } else if (command == 'help') {
-                            require("./commands/help")(Discord, message);
+                            require("./commands/help")(args, Discord, message);
                             talkedRecently.add(message.author.id);
                         } else if (command == 'achievements' || command == "achievement") {
                             require("./commands/achievement")(Discord, message);

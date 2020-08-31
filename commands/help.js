@@ -1,27 +1,100 @@
-module.exports = function(Discord, message) {
-    const helpEmbed = new Discord.MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Lost Lands Bot')
-        .setURL('https://lostlands.co')
-        .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
-        .addFields({
-            name: '**Server status:**',
-            value: '`-status`'
-        }, {
-            name: '**Suggestion:**',
-            value: '`-suggest {suggestion}`'
-        }, {
-            name: '**Player info:**',
-            value: '`-player {name}`'
-        }, {
-            name: '**List Possible Achievements**',
-            value: '`-achievements`'
-        }, {
-            name: '**Eat?**',
-            value: '`-eat`'
-        } )
-        .setTimestamp()
-        .setTimestamp().setFooter('Lost Lands')
+module.exports = function(args, Discord, message) {
+    console.log(args);
+    if (args[0] == "anarchy") {
+        //Anarchy help page
+        const helpEmbed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Lost Lands Bot - Anarchy Commands')
+            .setDescription("")
+            .addFields({
+                name: '**TPS:**',
+                value: '`anarchy.tps`',
+                inline: true
+            }, {
+                name: '**Online Players:**',
+                value: '`anarchy.online`',
+                inline: true
+            }, {
+                name: '**Total Players:**',
+                value: '`anarchy.joins`',
+                inline: true
+            }, {
+                name: '**Uptime**',
+                value: '`anarchy.uptime`',
+                inline: true
+            })
+            .setTimestamp()
+            .setTimestamp().setFooter('Lost Lands')
 
-    message.channel.send(helpEmbed);
+        message.channel.send(helpEmbed);
+
+    } else if (args[0] == "cpvp") {
+        //Anarchy help page
+        const helpEmbed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Lost Lands Bot - Crystal PVP Commands')
+            .setDescription("")
+            .addFields({
+                name: '**TPS:**',
+                value: '`cpvp.tps`',
+                inline: true
+            }, {
+                name: '**Online Players:**',
+                value: '`cpvp.online`',
+                inline: true
+            }, {
+                name: '**Total Players:**',
+                value: '`cpvp.joins`',
+                inline: true
+            }, {
+                name: '**Uptime**',
+                value: '`cpvp.uptime`',
+                inline: true
+            })
+            .setTimestamp()
+            .setTimestamp().setFooter('Lost Lands')
+
+        message.channel.send(helpEmbed);
+
+    } else {
+        const helpEmbed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Lost Lands Bot - Help')
+            .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
+            .addFields({
+                name: '**Server status:**',
+                value: '`-status`',
+                inline: true
+            }, {
+                name: '**Suggestion:**',
+                value: '`-suggest`',
+                inline: true
+            }, {
+                name: '**Player info:**',
+                value: '`-player`',
+                inline: true
+            }, {
+                name: '**List Achievements**',
+                value: '`-achievements`',
+                inline: true
+            }, {
+                name: '**Anarchy**',
+                value: '`-help anarchy`',
+                inline: true
+            }, {
+                name: '**Crystal PVP**',
+                value: '`-help cpvp`',
+                inline: true
+            }, {
+                name: '**Eat?**',
+                value: '`-eat`',
+                inline: true
+            } )
+            .setTimestamp()
+            .setTimestamp().setFooter('Lost Lands')
+
+        message.channel.send(helpEmbed);
+    }
+    
+    
 }
