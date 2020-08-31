@@ -76,12 +76,11 @@ module.exports = function(config, Discord, message) {
                     } else {
                         statsEmbed.setDescription('✅ All services operational.')
                     }
-                    statsEmbed.addField('**Status Website:**', '🟢 Online', true)
                     message.channel.send(statsEmbed)
                     
                     
             } else {
-                message.channel.send("Unable to get server status.")
+                message.channel.send("Unable to get server status. Is https://status.lostlands.co/ up?")
             }
         }
 
