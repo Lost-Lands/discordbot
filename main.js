@@ -58,6 +58,9 @@ c.on('ready', function() {
     MongoClient.connect(config.mongodb, function(err, db)  {
         if (err) throw err;
         client.on('message', (message) => {
+            if (message.content == "/discord link") {
+                message.reply("❌ This command is for in-game only")
+            }
             const args = message.content.slice(config.prefix.length).trim().split(/ +/);
             const command = args.shift().toLowerCase();
             
