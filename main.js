@@ -98,6 +98,9 @@ c.on('ready', function() {
                         } else if (command == "deny") {
                             require("./commands/deny")(args, config, Discord, client, message);
                             talkedRecently.add(message.author.id);
+                        } else if (command == "inprogress") {
+                            require("./commands/in-progress")(args, config, Discord, client, message);
+                            talkedRecently.add(message.author.id);
                         } else if (command == 'stats' || command == 'status') {
                             talkedRecently.add(message.author.id);
                             require("./commands/status")(config, Discord, message);
