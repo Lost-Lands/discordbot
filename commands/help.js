@@ -74,8 +74,8 @@ module.exports = function(args, Discord, message) {
                 value: '`-player`',
                 inline: true
             }, {
-                name: '**List Achievements**',
-                value: '`-achievements`',
+                name: '**List Badges**',
+                value: '`-badges`',
                 inline: true
             }, {
                 name: '**Anarchy**',

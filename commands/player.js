@@ -45,7 +45,7 @@ module.exports = function(args, config, Discord, message, connection, c) {
                 let loginhours = logindate_ob.getHours();
                 let loginminutes = logindate_ob.getMinutes();
                 let loginseconds = logindate_ob.getSeconds();
-                achievements = [];
+                badges = [];
 
                 var joindate_pretty = joinmonth + "/" + joindate + "/" + joinyear + " " + joinhours + ":" + joinminutes + ":" + joinseconds;
                 var logindate_pretty = loginmonth + "/" + logindate + "/" + loginyear + " " + loginhours + ":" + loginminutes + ":" + loginseconds;
@@ -68,7 +68,7 @@ module.exports = function(args, config, Discord, message, connection, c) {
 
                 if (joinmonth === "07" && joindate < "20") {
                     playerEmbed.setDescription("Note: This player may have joined prior to the listed date, but current records only go back to 7/10")
-                    achievements += "🔥"
+                    badges += "🔥"
                 }
 
 
@@ -99,18 +99,18 @@ module.exports = function(args, config, Discord, message, connection, c) {
                             if (votes[0]) {
                                 playerEmbed.addField("**Votes**", votes[0].votes, true)
                                 if (votes[0].votes > 99) {
-                                    achievements += "💯"
+                                    badges += "💯"
                                 }
                                 else if(votes[0].votes > 49) {
-                                    achievements += "🌈"
+                                    badges += "🌈"
                                 }
 
                             } else {
                                 playerEmbed.addField("**Votes**", "0", true);
                             };
 
-                            if (achievements.length > 0) {
-                                playerEmbed.addField("**Achievements**", achievements, true);
+                            if (badges.length > 0) {
+                                playerEmbed.addField("**Badges**", badges, true);
                             }
 
                            

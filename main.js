@@ -86,8 +86,8 @@ c.on('ready', function() {
                         } else if (command == 'help') {
                             require("./commands/help")(args, Discord, message);
                             talkedRecently.add(message.author.id);
-                        } else if (command == 'achievements' || command == "achievement") {
-                            require("./commands/achievement")(Discord, message);
+                        } else if (command == 'badges' || command == "badge") {
+                            require("./commands/badges")(Discord, message);
                             talkedRecently.add(message.author.id);
                         } else if (command == "player") {
                             require("./commands/player")(args, config, Discord, message, connection, c);
