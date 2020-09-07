@@ -3,6 +3,7 @@ const config = require('./config.json');
 exports.token = process.env.BOT_TOKEN || config.token;
 exports.prefix = process.env.BOT_PREFIX || config.prefix;
 exports.suggestion_channel = process.env.BOT_SUGGESTION_CHANNEL || config.suggestion_channel;
+exports.joins_channel = process.env.BOT_JOINS_CHANNEL || config.joins_channel;
 exports.admin_guild = process.env.BOT_ADMIN_GUILD || config.admin_guild;
 exports.admin_role = process.env.BOT_ADMIN_ROLE || config.admin_role;
 exports.mysql_host = process.env.MYSQL_HOST || config.mysql_host;

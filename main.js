@@ -57,6 +57,20 @@ c.on('ready', function() {
 
     MongoClient.connect(config.mongodb, function(err, db)  {
         if (err) throw err;
+
+        client.on("guildMemberAdd", function(member){ //User Joins
+            const joinEmbed = new Discord.MessageEmbed()
+                .setColor('#49ff0f')
+                .setDescription(`<@${member.id}> just joined! They're member #${member.guild.memberCount}`)
+            client.channels.cache.get(config.joins_channel).send(joinEmbed)
+        });
+        client.on("guildMemberRemove", function(member){ //User Leaves
+            const leaveEmbed = new Discord.MessageEmbed()
+                .setColor('#ff0f0f')
+                .setDescription(`${member.user.username}#${member.user.discriminator} just left. There are now ${member.guild.memberCount} members.`)
+            client.channels.cache.get(config.joins_channel).send(leaveEmbed)
+        });
+
         client.on('message', (message) => {
             if (message.content == "/discord link") {
                 message.reply("❌ This command is for in-game only")
