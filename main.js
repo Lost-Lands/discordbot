@@ -61,7 +61,7 @@ c.on('ready', function() {
         client.on("guildMemberAdd", function(member){ //User Joins
             const joinEmbed = new Discord.MessageEmbed()
                 .setColor('#49ff0f')
-                .setDescription(`<@${member.id}> just joined! They're member #${member.guild.memberCount}`)
+                .setDescription(`${member.user.username}#${member.user.discriminator} just joined! They're member #${member.guild.memberCount}`)
             client.channels.cache.get(config.joins_channel).send(joinEmbed)
         });
         client.on("guildMemberRemove", function(member){ //User Leaves
