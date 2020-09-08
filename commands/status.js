@@ -46,7 +46,7 @@ module.exports = function(config, Discord, message) {
                         .setURL('https://status.lostlands.co/')
                         .addField('**Discord Members:**', message.guild.memberCount, true)
                 
-                        .setTimestamp().setFooter('Lost Lands')
+                        .setTimestamp().setFooter('status.lostlands.co')
                     
                         
                         
