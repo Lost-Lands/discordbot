@@ -82,7 +82,7 @@ c.on('ready', function() {
                 if (message.author.bot) return;
                 if (message.content.startsWith(config.prefix)) {
                     if (talkedRecently.has(message.author.id)) {
-                        message.reply("You must wait `8s` before commands.");
+                        message.reply("You must wait `8s` between commands.");
                     } else {
             
                         if (command === 'ping') {
