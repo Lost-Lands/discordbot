@@ -121,31 +121,12 @@ c.on('ready', function() {
                         } else if (command == 'stats' || command == 'status') {
                             talkedRecently.add(message.author.id);
                             require("./commands/status")(config, Discord, message);
-                        } 
-    
-                        //Ticketing
-                        else if (command == "tnew") {
-                            require("./tickets/new")(args, config, Discord, client, message, db);
-                        }
-                        
-                        
+                        }         
                         setTimeout(() => {
                             // Removes the user from the set after 8 seconds.
                             talkedRecently.delete(message.author.id);
                         }, 8000);
                     }
-                } else {
-                    if (message.channel.parentID === config.ticketsCategory) {
-                        require("./tickets/staff-reply")(Discord, client, message, db);
-                    }
-                }
-            } else {
-
-                //Direct Messages to the bot
-                if (command === "close") {
-                    require("./tickets/close")(args, config, Discord, client, message, db);
-                } else {
-                    require("./tickets/user-reply")(args, config, Discord, client, message, db);
                 }
             }
         });
