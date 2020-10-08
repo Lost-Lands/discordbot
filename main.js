@@ -73,7 +73,7 @@ c.on('ready', function() {
 
         client.on('message', (message) => {
             if (message.content == "/discord link") {
-                message.reply("❌ This command is for in-game only")
+                message.reply("https://help.lostlands.co/article/link-your-discord")
             }
             const args = message.content.slice(config.prefix.length).trim().split(/ +/);
             const command = args.shift().toLowerCase();
