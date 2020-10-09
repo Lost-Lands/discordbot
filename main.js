@@ -71,6 +71,44 @@ c.on('ready', function() {
             client.channels.cache.get(config.joins_channel).send(leaveEmbed)
         });
 
+        client.on("guildMemberUpdate", function(oldMember, newMember){
+            if (oldMember.roles.cache.size < newMember.roles.cache.size) {
+                // role added
+                var newRoles = newMember.roles.cache.map(x => x.id);
+                var oldRoles = oldMember.roles.cache.map(x => x.id);
+
+                newRoles = newRoles.filter(function(val){
+                    return (oldRoles.indexOf(val) == -1 ? true : false)
+                })
+                if (newRoles.indexOf(config.vip_role) > -1) {
+                    //User was added to VIP
+                    client.channels.cache.get(config.vip_channel).send(`🎉 ${newMember} has received VIP!`);
+                }
+                else if (newRoles.indexOf(config.vip_plus_role) > -1) {
+                    //User was added to VIP+
+                    client.channels.cache.get(config.vip_channel).send(`🎉 ${newMember} has received VIP+!`);
+                }
+            } else if (oldMember.roles.cache.size > newMember.roles.cache.size) {
+                // role removed
+                var newRoles = newMember.roles.cache.map(x => x.id);
+                var oldRoles = oldMember.roles.cache.map(x => x.id);
+
+                oldRoles = oldRoles.filter(function(val){
+                    return (newRoles.indexOf(val) == -1 ? true : false)
+                })
+
+                if (oldRoles.indexOf(config.vip_role) > -1) {
+                    //User was removed from VIP
+                    client.channels.cache.get(config.vip_channel).send(`❌ ${newMember}'s VIP status expired.`);
+                }
+                else if (oldRoles.indexOf(config.vip_plus_role) > -1) {
+                    //User was removed from VIP+
+                    client.channels.cache.get(config.vip_channel).send(`❌ ${newMember}'s VIP+ status expired.`);
+                }
+                
+            }
+        });
+
         client.on('message', (message) => {
             if (message.content == "/discord link") {
                 message.reply("https://help.lostlands.co/article/link-your-discord")
