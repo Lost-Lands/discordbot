@@ -118,7 +118,7 @@ c.on('ready', function() {
                         } else if (command == "inprogress") {
                             require("./commands/in-progress")(args, config, Discord, client, message);
                             talkedRecently.add(message.author.id);
-                        } else if (command == 'stats' || command == 'status') {
+                        } else if (command == 'status') {
                             talkedRecently.add(message.author.id);
                             require("./commands/status")(config, Discord, message);
                         }         
