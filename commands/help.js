@@ -69,6 +69,10 @@ module.exports = function(args, Discord, message) {
                 value: '`-suggest`',
                 inline: true
             }, {
+                name: '**Check Invites:**',
+                value: '`-invites <@user>`',
+                inline: true
+            }, {
                 name: '**Player info:**',
                 value: '`-player`',
                 inline: true

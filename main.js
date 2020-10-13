@@ -159,7 +159,10 @@ c.on('ready', function() {
                         } else if (command == 'status') {
                             talkedRecently.add(message.author.id);
                             require("./commands/status")(args, config, Discord, message);
-                        }         
+                        } else if (command == 'invites') {
+                            talkedRecently.add(message.author.id);
+                            require("./commands/invites")(args, config, Discord, message);
+                        }        
                         setTimeout(() => {
                             // Removes the user from the set after 8 seconds.
                             talkedRecently.delete(message.author.id);
