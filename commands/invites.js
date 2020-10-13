@@ -42,10 +42,10 @@ module.exports = function(args, config, Discord, message) {
             }
             if (invites) {
                 invitesEmbed.setDescription(invites.uses);
-                if (invites.uses >= 5 && !message.member.roles.cache.some((role) => role.name === 'Embassador')) {
+                if (invites.uses >= 5 && !message.member.roles.cache.some((role) => role.name === 'Ambassador')) {
                     //give user role
-                    message.member.roles.add(message.guild.roles.cache.find(r => r.name === "Embassador")).then(function() {
-                        message.reply(`🎉 You've received the Embassador role!`);
+                    message.member.roles.add(message.guild.roles.cache.find(r => r.name === "Ambassador")).then(function() {
+                        message.reply(`🎉 You've received the Ambassador role!`);
                     }).catch(function(err) {
                         console.log(err);
                     });
