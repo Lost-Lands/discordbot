@@ -1,5 +1,4 @@
 module.exports = function(args, Discord, message) {
-    console.log(args);
     if (args[0] == "anarchy") {
         //Anarchy help page
         const helpEmbed = new Discord.MessageEmbed()
@@ -62,8 +61,8 @@ module.exports = function(args, Discord, message) {
             .setTitle('Lost Lands Bot - Help')
             .setDescription("Hi, I'm new! I don't have many commands yet but here is what I can do:")
             .addFields({
-                name: '**Server status:**',
-                value: '`-status`',
+                name: '**Status:**',
+                value: '`-status <server>`',
                 inline: true
             }, {
                 name: '**Suggestion:**',

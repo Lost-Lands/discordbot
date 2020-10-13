@@ -158,7 +158,7 @@ c.on('ready', function() {
                             talkedRecently.add(message.author.id);
                         } else if (command == 'status') {
                             talkedRecently.add(message.author.id);
-                            require("./commands/status")(config, Discord, message);
+                            require("./commands/status")(args, config, Discord, message);
                         }         
                         setTimeout(() => {
                             // Removes the user from the set after 8 seconds.
