@@ -2,8 +2,7 @@ const Discord = require('discord.js');
 var FTPClient = require('ftp');
 var c = new FTPClient();
 var mysql = require('mysql');
-const config = require("./load_config")
-var MongoClient = require('mongodb').MongoClient;
+const config = require("./load_config");
 var request = require('request');
 
 const express = require('express')
@@ -101,9 +100,6 @@ c.on('ready', function() {
 
 
     console.log("Connected to FTP");
-
-    MongoClient.connect(config.mongodb, function(err, db) {
-        if (err) throw err;
 
         client.on("guildMemberAdd", function(member) { //User Joins
             const joinEmbed = new Discord.MessageEmbed()
@@ -216,7 +212,6 @@ c.on('ready', function() {
                 }
             }
         });
-    });
 });
 
 client.login(config.token);
