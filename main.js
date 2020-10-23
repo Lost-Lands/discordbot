@@ -4,6 +4,7 @@ var c = new FTPClient();
 var mysql = require('mysql');
 const config = require("./load_config")
 var MongoClient = require('mongodb').MongoClient;
+var request = require('request');
 
 const express = require('express')
 
@@ -33,6 +34,7 @@ app.listen(port, () => {
 
 const client = new Discord.Client();
 const talkedRecently = new Set();
+var mainGuild;
 
 var connection = mysql.createConnection({
     host: config.mysql_host,
@@ -43,7 +45,7 @@ var connection = mysql.createConnection({
 c.connect({
     host: config.ftp_host,
     user: config.ftp_user,
-    password:  config.ftp_pass
+    password: config.ftp_pass
 });
 
 c.on('ready', function() {
@@ -51,40 +53,84 @@ c.on('ready', function() {
     client.once('ready', () => {
         console.log('Lost Lands Discord bot running.');
         client.user.setActivity("-help");
+        mainGuild = client.guilds.cache.get('712881309701111860');
+
+
     });
+
+    setInterval(() => {
+        request('https://query.lostlands.co/status/all', {
+            json: true
+        }, (err, res, servers) => {
+            if (err) {
+                return console.log(err);
+            }
+
+            //anarchy = 123863 / 712881310275993652
+            //evolution = 140708 / 764685246905581568
+            //lobby = 136233
+            //crystalpvp = 135084 / 747978107046068315
+
+            var serverArray = {
+                123863: {
+                    "name": "Anarchy",
+                    'id': '712881310275993652'
+                },
+                140708: {
+                    "name": "Evolutions",
+                    'id': '764685246905581568'
+                },
+                135084: {
+                    "name": "Crystal PVP",
+                    'id': '747978107046068315'
+                }
+            }
+
+            Object.keys(servers).forEach(function(id) {
+                if (serverArray[id]) {
+                    if (servers[id] && servers[id].data.status == "online") {
+                        mainGuild.channels.cache.get(serverArray[id].id).setName(`${serverArray[id].name} (${servers[id].data.onlinePlayers}/${servers[id].data.maxPlayers})`).catch(console.error);
+                    } else {
+                        mainGuild.channels.cache.get(serverArray[id].id).setName(`${serverArray[id].name} (OFFLINE)`).catch(console.error);
+                    }
+
+                };
+            })
+        });
+    }, 300000);
+
 
     console.log("Connected to FTP");
 
-    MongoClient.connect(config.mongodb, function(err, db)  {
+    MongoClient.connect(config.mongodb, function(err, db) {
         if (err) throw err;
 
-        client.on("guildMemberAdd", function(member){ //User Joins
+        client.on("guildMemberAdd", function(member) { //User Joins
             const joinEmbed = new Discord.MessageEmbed()
                 .setColor('#49ff0f')
                 .setDescription(`${member.user.username}#${member.user.discriminator} just joined! They're member #${member.guild.memberCount}`)
             client.channels.cache.get(config.joins_channel).send(joinEmbed)
         });
-        client.on("guildMemberRemove", function(member){ //User Leaves
+        client.on("guildMemberRemove", function(member) { //User Leaves
             const leaveEmbed = new Discord.MessageEmbed()
                 .setColor('#ff0f0f')
                 .setDescription(`${member.user.username}#${member.user.discriminator} just left. There are now ${member.guild.memberCount} members.`)
             client.channels.cache.get(config.joins_channel).send(leaveEmbed)
         });
 
-        client.on("guildMemberUpdate", function(oldMember, newMember){
+        client.on("guildMemberUpdate", function(oldMember, newMember) {
             if (oldMember.roles.cache.size < newMember.roles.cache.size) {
                 // role added
                 var newRoles = newMember.roles.cache.map(x => x.id);
                 var oldRoles = oldMember.roles.cache.map(x => x.id);
 
-                newRoles = newRoles.filter(function(val){
+                newRoles = newRoles.filter(function(val) {
                     return (oldRoles.indexOf(val) == -1 ? true : false)
                 })
                 if (newRoles.indexOf(config.vip_role) > -1) {
                     //User was added to VIP
                     client.channels.cache.get(config.vip_channel).send(`🎉 ${newMember} has received VIP!`);
-                }
-                else if (newRoles.indexOf(config.vip_plus_role) > -1) {
+                } else if (newRoles.indexOf(config.vip_plus_role) > -1) {
                     //User was added to VIP+
                     client.channels.cache.get(config.vip_channel).send(`🎉 ${newMember} has received VIP+!`);
                 }
@@ -93,19 +139,18 @@ c.on('ready', function() {
                 var newRoles = newMember.roles.cache.map(x => x.id);
                 var oldRoles = oldMember.roles.cache.map(x => x.id);
 
-                oldRoles = oldRoles.filter(function(val){
+                oldRoles = oldRoles.filter(function(val) {
                     return (newRoles.indexOf(val) == -1 ? true : false)
                 })
 
                 if (oldRoles.indexOf(config.vip_role) > -1) {
                     //User was removed from VIP
                     client.channels.cache.get(config.vip_channel).send(`❌ ${newMember}'s VIP status expired.`);
-                }
-                else if (oldRoles.indexOf(config.vip_plus_role) > -1) {
+                } else if (oldRoles.indexOf(config.vip_plus_role) > -1) {
                     //User was removed from VIP+
                     client.channels.cache.get(config.vip_channel).send(`❌ ${newMember}'s VIP+ status expired.`);
                 }
-                
+
             }
         });
 
@@ -115,21 +160,21 @@ c.on('ready', function() {
             }
             const args = message.content.slice(config.prefix.length).trim().split(/ +/);
             const command = args.shift().toLowerCase();
-            
+
             if (message.guild) {
                 if (message.author.bot) return;
                 if (message.content.startsWith(config.prefix)) {
                     if (talkedRecently.has(message.author.id)) {
                         message.reply("You must wait `8s` between commands.");
                     } else {
-            
+
                         if (command === 'ping') {
                             message.channel.send('Pong!');
                         } else if (command == 'rolestat') {
                             message.guild.roles.fetch()
                                 .then(roles => console.log(`There are ${roles.cache.size} roles.`))
                                 .catch(console.error);
-                        } else if (command =='eat') {
+                        } else if (command == 'eat') {
                             if (message.channel.id == "735692290919628881") {
                                 message.channel.send('***eat***');
                             } else {
@@ -148,7 +193,7 @@ c.on('ready', function() {
                             require("./commands/suggest")(config, Discord, client, message);
                             talkedRecently.add(message.author.id);
                         } else if (command == "accept") {
-                            require("./commands/accept")(args, config, Discord, client,  message);
+                            require("./commands/accept")(args, config, Discord, client, message);
                             talkedRecently.add(message.author.id);
                         } else if (command == "deny") {
                             require("./commands/deny")(args, config, Discord, client, message);
@@ -162,7 +207,7 @@ c.on('ready', function() {
                         } else if (command == 'invites') {
                             talkedRecently.add(message.author.id);
                             require("./commands/invites")(args, config, Discord, message);
-                        }        
+                        }
                         setTimeout(() => {
                             // Removes the user from the set after 8 seconds.
                             talkedRecently.delete(message.author.id);
