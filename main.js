@@ -112,6 +112,7 @@ c.on('ready', function() {
                 .setColor('#ff0f0f')
                 .setDescription(`${member.user.username}#${member.user.discriminator} just left. There are now ${member.guild.memberCount} members.`)
             client.channels.cache.get(config.joins_channel).send(leaveEmbed)
+            console.log("Member left");
         });
 
         client.on("guildMemberUpdate", function(oldMember, newMember) {
