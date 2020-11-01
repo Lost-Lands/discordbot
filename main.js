@@ -90,7 +90,7 @@ c.on('ready', function() {
                     if (servers[id] && servers[id].data.status == "online") {
                         mainGuild.channels.cache.get(serverArray[id].id).setName(`${serverArray[id].name} (${servers[id].data.onlinePlayers}/${servers[id].data.maxPlayers})`).catch(console.error);
                     } else {
-                        mainGuild.channels.cache.get(serverArray[id].id).setName(`${serverArray[id].name} (OFFLINE)`).catch(console.error);
+                        mainGuild.channels.cache.get(serverArray[id].id).setName(serverArray[id].name).catch(console.error);
                     }
 
                 };
