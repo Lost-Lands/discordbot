@@ -9,26 +9,16 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-const {
-    wakeDyno,
-    wakeDynos
-} = require('heroku-keep-awake');
-const e = require('express');
-const {
-    join
-} = require('path');
+const { wakeDyno } = require('heroku-keep-awake');
 
 const DYNO_URL = 'https://lostlands-discordbot.herokuapp.com/';
 
-app.get('/', (req, res) => res.send('Lost Lands Discord Bot Running.'))
+app.get('*', (req, res) => res.send('Lost Lands Discord Bot Running.'))
 
 app.listen(port, () => {
-
     wakeDyno(DYNO_URL);
-
     console.log(`Discord Bot Web UI Running`)
-
-})
+});
 
 const client = new Discord.Client();
 const talkedRecently = new Set();
