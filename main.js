@@ -4,6 +4,8 @@ var c = new FTPClient();
 var mysql = require('mysql');
 const config = require("./load_config");
 var request = require('request');
+const lostlandsAPI = require("node-lostlands-api");
+const v1 = new lostlandsAPI.v1();
 
 const express = require('express')
 
@@ -90,7 +92,7 @@ c.on('ready', function() {
                     if (servers[id] && servers[id].data.status == "online") {
                         mainGuild.channels.cache.get(serverArray[id].id).setName(`${serverArray[id].name} (${servers[id].data.onlinePlayers}/${servers[id].data.maxPlayers})`).catch(console.error);
                     } else {
-                        mainGuild.channels.cache.get(serverArray[id].id).setName(serverArray[id].name).catch(console.error);
+                        mainGuild.channels.cache.get(serverArray[id].id).setName( serverArray[id].name).catch(console.error);
                     }
 
                 };
@@ -184,7 +186,7 @@ c.on('ready', function() {
                             require("./commands/badges")(Discord, message);
                             talkedRecently.add(message.author.id);
                         } else if (command == "player") {
-                            require("./commands/player")(args, config, Discord, message, connection, c);
+                            require("./commands/player")(args, config, Discord, message, v1);
                             talkedRecently.add(message.author.id);
                         } else if (command == "suggest") {
                             require("./commands/suggest")(config, Discord, client, message);
