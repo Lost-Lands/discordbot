@@ -1,7 +1,4 @@
 const Discord = require('discord.js');
-var FTPClient = require('ftp');
-var c = new FTPClient();
-var mysql = require('mysql');
 const config = require("./load_config");
 var request = require('request');
 const lostlandsAPI = require("node-lostlands-api");
@@ -37,19 +34,7 @@ const client = new Discord.Client();
 const talkedRecently = new Set();
 var mainGuild;
 
-var connection = mysql.createConnection({
-    host: config.mysql_host,
-    user: config.mysql_user,
-    password: config.mysql_pass,
-    database: config.mysql_database
-});
-c.connect({
-    host: config.ftp_host,
-    user: config.ftp_user,
-    password: config.ftp_pass
-});
 
-c.on('ready', function() {
 
     client.once('ready', () => {
         console.log('Lost Lands Discord bot running.');
@@ -215,6 +200,5 @@ c.on('ready', function() {
                 }
             }
         });
-});
 
 client.login(config.token);
