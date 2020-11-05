@@ -31,7 +31,12 @@ module.exports = function(args, config, Discord, message, v1) {
             v1.player(playerName, function(err, player) {
                 if (err) {
                     if (err.error == "Player not found.") {
-                        return message.channel.send("That player has never played on Lost Lands before.");
+                        const profileEmbed = new Discord.MessageEmbed()
+                                .setColor('#0099ff')
+                                .setTitle('Player Profile')
+                                .setDescription('That player has never played on Lost Lands before.')
+                                .setTimestamp().setFooter('Lost Lands')
+                                msg.edit(profileEmbed);
                     } else {
                         console.error(err);
                     }
