@@ -152,7 +152,7 @@ var mainGuild;
                             if (message.channel.id == "735692290919628881") {
                                 message.channel.send('***eat***');
                             } else {
-                                message.reply("this isnt #eat 🤨");
+                                message.reply("this isnt <#735692290919628881> 🤨");
                             }
                         } else if (command == 'help') {
                             require("./commands/help")(args, Discord, message);
