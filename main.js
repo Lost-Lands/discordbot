@@ -66,7 +66,7 @@ var mainGuild;
                 if (serverArray[id]) {
                     if (servers[id] && servers[id].data.status == "online") {
                         mainGuild.channels.cache.get(serverArray[id].id).setName(`${serverArray[id].name} (${servers[id].data.onlinePlayers}/${servers[id].data.maxPlayers})`).catch(console.error);
-                    } else {
+                    } else { 
                         mainGuild.channels.cache.get(serverArray[id].id).setName( serverArray[id].name).catch(console.error);
                     }
 
@@ -162,6 +162,9 @@ var mainGuild;
                             talkedRecently.add(message.author.id);
                         } else if (command == "player") {
                             require("./commands/player")(args, config, Discord, message, v1);
+                            talkedRecently.add(message.author.id);
+                        } else if (command == "linked") {
+                            require("./commands/linked")(config, Discord, message, v1);
                             talkedRecently.add(message.author.id);
                         } else if (command == "suggest") {
                             require("./commands/suggest")(config, Discord, client, message);
