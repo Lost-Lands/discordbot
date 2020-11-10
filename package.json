@@ -15,7 +15,7 @@
     "heroku-keep-awake": "^1.1.2",
     "main": "^1000.0.1",
     "node": "^14.7.0",
-    "node-lostlands-api": "^1.0.3",
+    "node-lostlands-api": "^1.0.4",
     "request": "^2.88.2"
   }
 }
