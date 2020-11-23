@@ -64,9 +64,10 @@ class Client extends EventEmitter {
                             //Removes the user from the set after the cooldown.
                             cooldown.delete(message.author.id);
                         }, config.cooldown * 1000);
-                    } else {
-                        this.emit("message", message);
                     }
+                }
+                else {
+                    this.emit("message", message);
                 }
             } else {
                 this.emit("directMessage", message);
