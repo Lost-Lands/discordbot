@@ -5,6 +5,19 @@ const config = require('./config').config;
 
 const bot = new Discord.Client(config)
 
+// Keep bot awake
+const express = require('express')
+const app = express();
+const port = process.env.PORT || 3000
+const { wakeDyno } = require('heroku-keep-awake');
+const DYNO_URL = 'https://lostlands-discordbot.herokuapp.com/';
+app.get('*', (req, res) => res.send('Lost Lands Discord Bot Running.'))
+app.listen(port, () => {
+    wakeDyno(DYNO_URL);
+    console.log(`[INFO] Discord Bot Web UI Running`)
+});
+
+
 bot.on("ready", () => {
     console.log("[INFO] Lost Lands Discord Bot Running.")
     bot.setActivity("WATCHING", "for -help", (err, presence)  => {
