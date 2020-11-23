@@ -1,15 +1,18 @@
 {
-	"prefix": "-",
-	"token": "DISCORD BOT TOKEN",
-	"suggestion_channel":"",
-	"admin_guild":"",
-	"admin_role":"Admin",
-	"uptimerobot_api_key": "",
-	"mysql_host": "",
-	"mysql_user":"",
-	"mysql_pass":"",
-	"mysql_database":"",
-	"ftp_host": "",
-	"ftp_user": "",
-	"ftp_pass": ""
+    "prefix": "-",
+    "cooldown": 8,
+    "commands": ["ping", "eat", "help", "status", "player", "linked", "invites", "suggest", "accept", "deny", "inprogress", "motd"],
+    "channels": {
+        "join": "740858802429100145",
+        "leave": "740858802429100145",
+		"vip": "768759685725421600",
+        "eat": "735692290919628881",
+        "suggestions": "741013245069885522",
+        "motd_suggestions": "780268856043241533"
+    }, 
+    "roles": {
+        "vip": "780308488211267585",
+        "vip_plus": "780308602132103188",
+        "verified_player": "748016399863251004"
+	}
 }
