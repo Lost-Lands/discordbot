@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { EventEmitter } = require("events");
+const lostlandsAPI = require("node-lostlands-api");
+
 
 class Client extends EventEmitter {
     constructor(config) {
