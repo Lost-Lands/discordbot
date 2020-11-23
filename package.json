@@ -10,11 +10,11 @@
   "author": "DoubleCheck",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.5.0",
     "express": "^4.17.1",
     "heroku-keep-awake": "^1.1.2",
     "main": "^1000.0.1",
-    "node": "^14.7.0",
+    "nconf": "^0.10.0",
     "node-lostlands-api": "^1.0.4",
     "request": "^2.88.2"
   }
