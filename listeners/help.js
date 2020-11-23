@@ -1,5 +1,5 @@
 module.exports = (bot) => {
-    bot.on("help", function(message, content) {
+    bot.on("help", (message, content) => {
         var args = bot.split(content);
         if (args[0] == "anarchy") {
             //Anarchy help page
