@@ -75,10 +75,6 @@ module.exports = (bot) => {
                     value: '`-player`',
                     inline: true
                 }, {
-                    name: '**List Badges**',
-                    value: '`-badges`',
-                    inline: true
-                }, {
                     name: '**Anarchy**',
                     value: '`-help anarchy`',
                     inline: true
