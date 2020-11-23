@@ -3,8 +3,8 @@
     "cooldown": 8,
     "commands": ["ping", "eat", "help", "status", "player", "linked", "invites", "suggest", "accept", "deny", "inprogress", "motd"],
     "channels": {
-        "join": "740858802429100145",
-        "leave": "740858802429100145",
+        "join": "714664485096521728",
+        "leave": "714664485096521728",
 		"vip": "763969772794019850",
         "eat": "735692290919628881",
         "suggestions": "740327414567272570",
