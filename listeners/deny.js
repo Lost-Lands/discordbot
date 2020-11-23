@@ -7,7 +7,7 @@ module.exports = (bot) => {
             if (args[0].length < 1) {
                 return message.reply("Usage: `"+bot.config.prefix+"deny {message ID} {response}`");
             }
-            staffresponse = content.slice(8 + args[0].length);
+            staffresponse = content.slice(args[0].length);
             bot.client.channels.cache.get(bot.config.channels.suggestions).messages.fetch(args[0])
                 .then(function(message) {
                     var messageData = JSON.parse(JSON.stringify(message.embeds[0]));
@@ -27,8 +27,13 @@ module.exports = (bot) => {
                     }
     
                     message.edit(suggestionEmbed);
+                    
+                }).catch((err) => {
+                    console.error(err);
+                    return message.channel.send("Could not deny, error: "+err);
                 });
-            return message.reply("Denied suggestion.");
+                return message.reply("Denied suggestion.");
+            
         }
     });
 }

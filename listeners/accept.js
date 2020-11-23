@@ -7,7 +7,8 @@ module.exports = (bot) => {
             if (args[0].length < 1) {
                 return message.reply("Usage: `"+bot.config.prefix+"accept {message ID} {response}`");
             }
-            staffresponse = content.slice(8 + args[0].length);
+            staffresponse = content.slice(args[0].length);
+            console.log(args[0]);
             bot.client.channels.cache.get(bot.config.channels.suggestions).messages.fetch(args[0])
                 .then(function(message) {
                     var messageData = JSON.parse(JSON.stringify(message.embeds[0]));
@@ -27,8 +28,11 @@ module.exports = (bot) => {
                     }
     
                     message.edit(suggestionEmbed);
+                }).catch((err) => {
+                    console.error(err);
+                    return message.channel.send("Could not accept, error: "+err);
                 });
-            return message.reply("Accepted suggestion.");
+                return message.reply("Accepted suggestion.");
         }
     });
 }
