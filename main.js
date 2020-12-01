@@ -24,7 +24,7 @@ app.get("/api/status", (req, res) => {
     })
 });
 
-app.get('*', (req, res) => res.json({"message": "Lost Lands Discord API"}))
+app.get('*', (req, res) => res.json({"error":"Invalid request."}))
 app.listen(port, () => {
     wakeDyno(DYNO_URL);
     console.log(`[INFO] Discord Bot Web UI Running`)
