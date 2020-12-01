@@ -11,7 +11,20 @@ const app = express();
 const port = process.env.PORT || 3000
 const { wakeDyno } = require('heroku-keep-awake');
 const DYNO_URL = 'https://lostlands-discordbot.herokuapp.com/';
-app.get('*', (req, res) => res.send('Lost Lands Discord Bot Running.'))
+
+app.get("/api/status", (req, res) => {
+    bot.guild("712881309701111860", (err, guild) => {
+        if (err){
+            res.json({error: err});
+        } else {
+            var online = guild.members.cache.filter(member => member.presence.status !== "offline").size;
+            var total = guild.memberCount;
+            res.json({online, total});
+        }
+    })
+});
+
+app.get('*', (req, res) => res.json({"message": "Lost Lands Discord API"}))
 app.listen(port, () => {
     wakeDyno(DYNO_URL);
     console.log(`[INFO] Discord Bot Web UI Running`)
